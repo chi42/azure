@@ -3,7 +3,7 @@ Once the trial has concluded, the Cloudera Enterprise features will be disabled 
 
 # By clicking "Deploy to Azure" you agree to the Terms and Conditions below.
 # DS14 Deployment(use this if you are not sure)
-<a href="https://azuredeploy.net/?repository=https://github.com/chi42/azure/tree/master/cloudera-on-centos" target="_blank">
+<a href="https://azuredeploy.net/?repository=https://github.com/chi42/azure/tree/master/cloudera-on-centos/mainTemplate.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png" />
 </a>
 
