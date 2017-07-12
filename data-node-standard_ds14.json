@@ -1,6 +1,6 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "vnetID": {
       "type":"string"
@@ -45,7 +45,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('vmUri')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "vnetID": {

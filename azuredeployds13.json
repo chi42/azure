@@ -1,6 +1,6 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "adminUserName": {
       "type": "string",
@@ -126,19 +126,19 @@
       }
     },
     "numberOfDataNodes": {
-      "type": "string",
-      "defaultValue": "3",
+      "type": "int",
+      "defaultValue": 3,
       "metadata": {
         "description": "Number of data nodes for Prod (defaults to 3)"
       }
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_DS14",
+      "defaultValue": "Standard_DS13",
       "metadata": {
-        "description": "The size of the VMs deployed in the cluster (defaults to Standard_DS14)"
+        "description": "The size of the VMs deployed in the cluster (defaults to Standard_DS13)"
       },
-      "allowedValues": ["Standard_DS14", "Standard_DS13", "Standard_DS14_v2", "Standard_DS13_v2"]
+      "allowedValues": ["Standard_DS14", "Standard_DS13", "Standard_DS14_V2", "Standard_DS13_V2"]
     },
     "vmImage": {
       "type": "string",
@@ -227,13 +227,6 @@
         "Security / Compliance",
         "Storage"
       ]
-    },
-     "artifactsBaseUrl" : {
-      "type" : "string",
-      "metadata" : {
-        "artifactsBaseUrl" : "Base URL of the Cloudera Template gallery package"
-      },
-      "defaultValue" : ""
     }
   },
   "variables": {
@@ -243,7 +236,7 @@
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
-    "scriptsUri": "[parameters('artifactsBaseUrl')]",
+    "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 0, 13)), '.json')]",
     "sa": "[parameters('masterNodeIPAddress')]",
@@ -261,12 +254,12 @@
     },
     "clusterTshirtSizeEval": {
       "masterNodeCount": 1,
-      "dataNodeCount": "[int(parameters('numberOfDataNodes'))]",
+      "dataNodeCount": "[parameters('numberOfDataNodes')]",
       "highAvailability": "false"
     },
     "clusterTshirtSizeProd": {
       "masterNodeCount": 3,
-      "dataNodeCount": "[int(parameters('numberOfDataNodes'))]",
+      "dataNodeCount": "[parameters('numberOfDataNodes')]",
       "highAvailability": "true"
     },
     "clusterSpec": "[variables(concat('clusterTshirtSize', parameters('tshirtSize')))]",
@@ -342,7 +335,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('share-resourcesUri')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "resourceAPIVersion":{
@@ -371,7 +364,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/master-node.json')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "vnetID":{
@@ -415,7 +408,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('data-nodeUri')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "vnetID":{
@@ -463,7 +456,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/setup-cloudera.json')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "resourceAPIVersion":{

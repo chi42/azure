@@ -26,6 +26,8 @@ log() {
 # use temp file to use sudo
 cat > inputs2.sh << 'END'
 
+
+
 mountDriveForLogCloudera()
 {
   dirname=/log
