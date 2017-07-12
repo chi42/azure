@@ -123,7 +123,7 @@
                                 "Standard_DS13_v2"
                             ]
                         },
-                        "count": 9
+                        "count": "[steps('infraInfo').datanodeCount]"
                     },
                     {
                         "name": "vnetSpec",
