@@ -110,7 +110,8 @@
                                 "Standard_DS13",
                                 "Standard_DS13_v2"
                             ]
-                        }
+                        },
+                        "count": 2
                     },
                     {
                         "name": "vnetSpec",
