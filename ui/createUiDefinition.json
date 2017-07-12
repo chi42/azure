@@ -138,8 +138,8 @@
                                     "addressPrefixSize": "/16"
                                 },
                                 "constraints": {
-                                    "minAddressPrefixSize": "/29",
-                                    "minAddressCount": "[add(2, 9)]",
+                                    "minAddressPrefixSize": "/28",
+                                    "minAddressCount": 10,
                                     "requireContiguousAddresses": true
                                 }
                             }
