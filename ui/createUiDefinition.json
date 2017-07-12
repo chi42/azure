@@ -93,6 +93,18 @@
                         "count": 10
                     },
                     {
+                        "name": "datanodeCount",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Number of data nodes",
+                        "defaultValue": "3",
+                        "toolTip": "Number of data nodes, 3 to 90",
+                        "constraints": {
+                            "required": true,
+                            "regex":"^([3-9]|[1-8][0-9]|90)$",
+                            "validationMessage":"Number of data nodes must be within 3 to 90"
+                        }
+                    },
+                    {
                         "name": "clusterVmSize",
                         "type": "Microsoft.Compute.SizeSelector",
                         "label": "Virtual machine size",
@@ -111,7 +123,7 @@
                                 "Standard_DS13_v2"
                             ]
                         },
-                        "count": 2
+                        "count": "[steps('infraInfo').datanodeCount]"
                     },
                     {
                         "name": "vnetSpec",
@@ -196,18 +208,6 @@
                                 { "label": "Production", "value": "Prod"},
                                 { "label": "POC", "value": "Eval"}
                             ]
-                        }
-                    },
-                    {
-                        "name": "datanodeCount",
-                        "type": "Microsoft.Common.TextBox",
-                        "label": "Number of data nodes",
-                        "defaultValue": "3",
-                        "toolTip": "Number of data nodes, 3 to 90",
-                        "constraints": {
-                            "required": true,
-                            "regex":"^([3-9]|[1-8][0-9]|90)$",
-                            "validationMessage":"Number of data nodes must within 3 to 90"
                         }
                     }
                 ]
@@ -337,7 +337,7 @@
             "adminUserName": "[basics('username')]",
             "adminPassword": "[basics('password')]",
             "tshirtSize": "[steps('clouderaSetupInformation').clusterType]",
-            "numberOfDataNodes": "[steps('clouderaSetupInformation').datanodeCount]",
+            "numberOfDataNodes": "[steps('infraInfo').datanodeCount]",
             "cmUserName": "[steps('clouderaSetupInformation').cmUsername]",
             "cmPassword": "[steps('clouderaSetupInformation').cmPassword]",
             "company": "[steps('userInformation').company]",
