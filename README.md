@@ -1,6 +1,11 @@
 # Deploy a Cloudera Express cluster with the option to unlock Cloudera Enterprise features for a free 60-day trial
 Once the trial has concluded, the Cloudera Enterprise features will be disabled until you obtain and upload a license.
 
+CreateUiDisplay
+<a href="https%3A%2F%2Fraw.githubusercontent.com%2Fchi42%2Fazure%2Fmaster%2FcreateUiDefinition.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png" />
+</a>
+
 # By clicking "Deploy to Azure" you agree to the Terms and Conditions below.
 # DS14 Deployment(use this if you are not sure)
 <a href="https://azuredeploy.net/?repository=https://github.com/chi42/azure" target="_blank">

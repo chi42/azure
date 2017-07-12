@@ -3,61 +3,76 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "storageAccountSuffix": {
-      "value": "GEN-UNIQUE-10"
-    },
-    "adminPassword": {
-      "value": "GEN-PASSWORD"
-    },
-    "cmPassword": {
-      "value": "GEN-PASSWORD"
-    },
-    "numberOfDataNodes": {
-      "value": 3
-    },
-    "dnsNamePrefix": {
-      "value": "GEN-UNIQUE-10"
-    },
-    "masterStorageAccountType": {
-      "value": "Premium_LRS"
+      "value": "cdh"
     },
     "workerStorageAccountType": {
-      "value": "Standard_LRS"
+      "value": "Premium_LRS"
+    },
+    "vmSize": {
+      "value": "Standard_DS14_v2"
+    },
+    "dnsNamePrefix": {
+      "value": "nwong-test"
     },
     "virtualNetworkName": {
-      "value": "GEN-UNIQUE-10"
+      "value": "clouderaVnet"
     },
     "subnetName": {
-      "value": "GEN-UNIQUE-10"
+      "value": "clouderasubnet"
+    },
+    "vnetNewOrExisting": {
+      "value": "new"
+    },
+    "virtualNetworkRGName": {
+      "value": "nwong-test-east2"
+    },
+    "addressPrefix": {
+      "value": "10.4.0.0/16"
+    },
+    "subnetPrefix": {
+      "value": "10.4.0.0/16"
+    },
+    "masterNodeIPAddress": {
+      "value": "10.4.0.4"
+    },
+    "adminUserName": {
+      "value": "chi"
+    },
+    "adminPassword": {
+      "value": "password17452972"
     },
     "tshirtSize": {
       "value": "Eval"
     },
-    "vmSize": {
-      "value": "Standard_DS14"
+    "numberOfDataNodes": {
+      "value": "3"
     },
-    "vmImage": {
-      "value": "ClouderaCentOS6_7"
+    "cmUserName": {
+      "value": "chi"
+    },
+    "cmPassword": {
+      "value": "password17452972"
     },
     "company": {
-      "value": "company"
+      "value": "n"
     },
     "emailAddress": {
-      "value": "email@yourcompany.com"
+      "value": "chi@42gems.com"
     },
     "businessPhone": {
-      "value": "123456789"
+      "value": "1234567890"
     },
     "firstName": {
-      "value": "FirstName"
+      "value": "n"
     },
     "lastName": {
-      "value": "LastName"
+      "value": "w"
     },
     "jobRole": {
       "value": "Administrator"
     },
     "jobFunction": {
-      "value": "Storage"
+      "value": "Analytics / Business Intelligence"
     }
   }
 }
