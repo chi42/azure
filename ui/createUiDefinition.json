@@ -139,7 +139,7 @@
                                 },
                                 "constraints": {
                                     "minAddressPrefixSize": "/28",
-                                    "minAddressCount": "[steps('clouderaSetupInformation').datanodeCount]",
+                                    "minAddressCount": 10,
                                     "requireContiguousAddresses": true
                                 }
                             }
