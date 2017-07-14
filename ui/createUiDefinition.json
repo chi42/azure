@@ -123,6 +123,11 @@
                                 "Standard_DS13_v2"
                             ]
                         },
+                        "imageReference": {
+                          "publisher": "cloudera",
+                          "offer": "cloudera-centos-6",
+                          "sku": "CLOUDERA-CENTOS-6"
+                         },
                         "count": "[steps('infraInfo').datanodeCount]"
                     },
                     {
