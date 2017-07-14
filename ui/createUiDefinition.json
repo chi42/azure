@@ -125,7 +125,7 @@
                         },
                         "imageReference": {
                           "publisher": "cloudera",
-                          "offer": "cloudera-centos-6",
+                          "offer": "cloudera-centos-6asdfasd",
                           "sku": "CLOUDERA-CENTOS-6"
                          },
                         "count": "[steps('infraInfo').datanodeCount]"
