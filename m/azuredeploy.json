@@ -232,10 +232,11 @@
   "variables": {
     "templateAPIVersion":"2017-05-10",
     "resourceAPIVersions": {
+      "virtualNetworks": "2017-06-01",
       "availabilitySets": "2017-06-01",
       "networkSecurityGroups": "2017-06-01",
       "storageAccounts": "2017-06-01",
-      "publicIPAdresses": "2017-06-01",
+      "publicIPAddresses": "2017-06-01",
       "networkInterfaces": "2017-06-01",
       "virtualMachines": "2017-04-01",
       "virtualMachinesExtensions": "2017-03-30"
