@@ -8,8 +8,8 @@
     "templateAPIVersion": {
       "type":"string"
     },
-    "resourceAPIVersion":{
-      "type":"string"
+    "resourceAPIVersions":{
+      "type":"object"
     },
     "dnsNamePrefix": {
       "type": "string"
@@ -51,8 +51,8 @@
           "vnetID": {
             "value":"[parameters('vnetID')]"
           },
-          "resourceAPIVersion":{
-            "value":"[parameters('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[parameters('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value":"[parameters('dnsNamePrefix')]"
