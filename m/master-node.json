@@ -218,7 +218,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), copyIndex(), '/prepareDisks')]",
-      "apiVersion": "[parameters('resourceAPIVersion').virtualMachinesExtensions]",
+      "apiVersion": "[parameters('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "nameNodeNicLoop",
