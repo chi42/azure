@@ -238,7 +238,7 @@
       "storageAccounts": "2015-06-15",
       "publicIPAddresses": "2017-06-01",
       "networkInterfaces": "2017-06-01",
-      "virtualMachines": "2017-04-01",
+      "virtualMachines": "2017-03-30",
       "virtualMachinesExtensions": "2017-03-30"
     },
     "installCDH":"True",
