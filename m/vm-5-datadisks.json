@@ -69,13 +69,13 @@
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName'))]",
       "apiVersion": "[parameters('resourceAPIVersions').storageAccounts]",
+      "sku": {
+        "name": "[parameters('storageAccount').type]"
+      },
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "storageAccountLoop",
         "count": "[parameters('vmCount')]"
-      },
-      "properties": {
-        "accountType": "[parameters('storageAccount').type]"
       }
     },
     {
