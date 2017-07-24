@@ -128,8 +128,7 @@
                           "offer": "cloudera-centos-6",
                           "sku": "CLOUDERA-CENTOS-6"
                         },
-                            "count": "[steps('infraInfo').datanodeCount]"
-                        }
+                        "count": "[steps('infraInfo').datanodeCount]"
                     },
                     {
                         "name": "vnetSpec",
