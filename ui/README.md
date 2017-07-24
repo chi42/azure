@@ -1,13 +1,14 @@
 # Deploy a Cloudera Express cluster with the option to unlock Cloudera Enterprise features for a free 60-day trial
 Once the trial has concluded, the Cloudera Enterprise features will be disabled until you obtain and upload a license.
 
+<a href='https://portal.azure.com/?clientOptimizations=false#blade/Microsoft_Azure_Compute/CreateMultiVmWizardBlade/internal_bladeCallId/anything/internal_bladeCallerParams/{"initialData":{},"providerConfig":{"createUiDefinition":"https%3A%2F%2Fraw.githubusercontent.com%2Fchi42%2Fazure%2Fmaster%2Fui%2FcreateUiDefinition.json"}}' target="_blank">TEST UI</a>
+
 # By clicking "Deploy to Azure" you agree to the Terms and Conditions below.
 # DS14 Deployment(use this if you are not sure)
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fcloudera-on-centos%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png" />
-</a>  <a href="https://portal.azure.us/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fcloudera-on-centos%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fchi42%2Fazure%2Fmaster%2Fm%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/AzureGov.png" />
 </a>
+
 
 # DS13 Deployment(smaller size machine for batch and poc)
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fcloudera-on-centos%2Fazuredeployds13.json" target="_blank">
