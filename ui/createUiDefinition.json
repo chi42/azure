@@ -125,10 +125,11 @@
                         },
                         "imageReference": {
                           "publisher": "cloudera",
-                          "offer": "cloudera-centos-6asdfasd",
+                          "offer": "cloudera-centos-6",
                           "sku": "CLOUDERA-CENTOS-6"
-                         },
-                        "count": "[steps('infraInfo').datanodeCount]"
+                        },
+                            "count": "[steps('infraInfo').datanodeCount]"
+                        }
                     },
                     {
                         "name": "vnetSpec",
@@ -146,7 +147,7 @@
                             "addressPrefixSize": "/16"
                         },
                         "constraints": {
-                            "minAddressPrefixSize": "/29"
+                            "minAddressPrefixSize": "/28"
                         },
                         "subnets": {
                             "subnet1": {
@@ -157,7 +158,7 @@
                                 },
                                 "constraints": {
                                     "minAddressPrefixSize": "/28",
-                                    "minAddressCount": 10,
+                                    "minAddressCount": 9,
                                     "requireContiguousAddresses": true
                                 }
                             }
@@ -213,6 +214,18 @@
                                 { "label": "Production", "value": "Prod"},
                                 { "label": "POC", "value": "Eval"}
                             ]
+                        }
+                    },
+                    {
+                        "name": "datanodeCount",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Number of data nodes",
+                        "defaultValue": "3",
+                        "toolTip": "Number of data nodes, 3 to 90",
+                        "constraints": {
+                            "required": true,
+                            "regex":"^([3-9]|[1-8][0-9]|90)$",
+                            "validationMessage":"Number of data nodes must within 3 to 90"
                         }
                     }
                 ]
@@ -342,7 +355,7 @@
             "adminUserName": "[basics('username')]",
             "adminPassword": "[basics('password')]",
             "tshirtSize": "[steps('clouderaSetupInformation').clusterType]",
-            "numberOfDataNodes": "[steps('infraInfo').datanodeCount]",
+            "numberOfDataNodes": "[steps('clouderaSetupInformation').datanodeCount]",
             "cmUserName": "[steps('clouderaSetupInformation').cmUsername]",
             "cmPassword": "[steps('clouderaSetupInformation').cmPassword]",
             "company": "[steps('userInformation').company]",

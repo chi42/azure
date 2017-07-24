@@ -237,8 +237,17 @@
     }
   },
   "variables": {
-    "templateAPIVersion":"2015-11-01",
-    "resourceAPIVersion":"2015-06-15",
+    "templateAPIVersion":"2017-05-10",
+    "resourceAPIVersions": {
+      "availabilitySets": "2017-03-30",
+      "networkInterfaces": "2017-06-01",
+      "networkSecurityGroups": "2017-06-01",
+      "publicIPAddresses": "2017-06-01",
+      "storageAccounts": "2017-06-01",
+      "virtualMachines": "2017-03-30",
+      "virtualMachinesExtensions": "2017-03-30",
+      "virtualNetworks": "2017-06-01"
+    },
     "installCDH":"True",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
@@ -345,8 +354,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
@@ -377,8 +386,8 @@
           "vnetID":{
             "value":"[variables('VNetId')]"
           },
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -424,8 +433,8 @@
           "templateAPIVersion":{
             "value":"[variables('templateAPIVersion')]"
           },
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -466,8 +475,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
