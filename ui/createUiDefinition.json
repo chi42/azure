@@ -24,8 +24,8 @@
                 "toolTip": "Password for the linux virtual machine.",
                 "constraints": {
                     "required": true,
-                    "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{6,72}$",
-                    "validationMessage": "The password must be between 6 and 72 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
+                    "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{12,72}$",
+                    "validationMessage": "The password must be between 12 and 72 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
                 },
                 "options": {
                     "hideConfirmation": false
@@ -93,18 +93,6 @@
                         "count": 10
                     },
                     {
-                        "name": "datanodeCount",
-                        "type": "Microsoft.Common.TextBox",
-                        "label": "Number of data nodes",
-                        "defaultValue": "3",
-                        "toolTip": "Number of data nodes, 3 to 90",
-                        "constraints": {
-                            "required": true,
-                            "regex":"^([3-9]|[1-8][0-9]|90)$",
-                            "validationMessage":"Number of data nodes must be within 3 to 90"
-                        }
-                    },
-                    {
                         "name": "clusterVmSize",
                         "type": "Microsoft.Compute.SizeSelector",
                         "label": "Virtual machine size",
@@ -127,8 +115,7 @@
                           "publisher": "cloudera",
                           "offer": "cloudera-centos-6",
                           "sku": "CLOUDERA-CENTOS-6"
-                        },
-                        "count": "[steps('infraInfo').datanodeCount]"
+                         }
                     },
                     {
                         "name": "vnetSpec",
@@ -195,8 +182,8 @@
                         "toolTip": "Password for logging into Cloudera Manager",
                         "constraints": {
                             "required": true,
-                            "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{6,72}$",
-                            "validationMessage": "The password must be between 6 and 72 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
+                            "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{12,72}$",
+                            "validationMessage": "The password must be between 12 and 72 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
                         },
                         "options": {
                             "hideConfirmation": false
