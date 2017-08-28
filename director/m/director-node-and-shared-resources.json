@@ -51,30 +51,21 @@
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('masterAsName')]",
       "location": "[resourceGroup().location]",
-      "properties": { },
-      "sku": {
-        "name": "Aligned"
-      }
+      "properties": { }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('workerAsName')]",
       "location": "[resourceGroup().location]",
-      "properties": { },
-      "sku": {
-        "name": "Aligned"
-      }
+      "properties": { }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('edgeAsName')]",
       "location": "[resourceGroup().location]",
-      "properties": { },
-      "sku": {
-        "name": "Aligned"
-      }
+      "properties": { }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
