@@ -19,7 +19,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('vmName'), '/bootstrapServer')]",
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",

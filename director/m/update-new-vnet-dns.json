@@ -12,7 +12,7 @@
   "variables": {},
   "resources": [
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[parameters('version').resourceAPIVersions.virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[parameters('networkSpec').virtualNetworkName]",
       "location": "[resourceGroup().location]",

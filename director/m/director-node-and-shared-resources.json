@@ -35,6 +35,7 @@
   },
   "variables": {
     "singleQuote": "'",
+    "resourceAPIVersions": "[parameters('version').resourceAPIVersions]",
     "vmName": "[parameters('dnsNamePrefix')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
@@ -47,28 +48,37 @@
   },
   "resources": [
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[resourceAPIVersions.availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('masterAsName')]",
       "location": "[resourceGroup().location]",
-      "properties": { }
+      "properties": { },
+      "sku": {
+          "name": "Aligned"
+      }
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[resourceAPIVersions.availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('workerAsName')]",
       "location": "[resourceGroup().location]",
-      "properties": { }
+      "properties": { },
+      "sku": {
+          "name": "Aligned"
+      }
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[resourceAPIVersions.availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('edgeAsName')]",
       "location": "[resourceGroup().location]",
-      "properties": { }
+      "properties": { },
+      "sku": {
+          "name": "Aligned"
+      }
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[resourceAPIVersions.networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(parameters('networkSpec').virtualNetworkName,'-nsg')]",
       "location": "[resourceGroup().location]",
@@ -92,7 +102,7 @@
       }
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[resourceAPIVersions.networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('dirSecurityGroupName')]",
       "location": "[resourceGroup().location]",
@@ -118,14 +128,15 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "accountType": "[parameters('storageAccount').type]"
-      }
+      "apiVersion": "[resourceAPIVersions.storageAccount]",
+      "sku": {
+        "name": "[parameters('storageAccount').type]"
+      },
+      "kind": "Storage",
+      "location": "[resourceGroup().location]"
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "apiVersion": "[resourceAPIVersions.publicIPAddresses]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
       "location": "[resourceGroup().location]",

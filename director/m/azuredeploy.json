@@ -248,7 +248,16 @@
   "variables": {
     "version":{
       "templateAPIVersion":"2015-11-01",
-      "resourceAPIVersion":"2015-06-15",
+      "resourceAPIVersions": {
+        "availabilitySets": "2017-03-30",
+        "networkInterfaces": "2017-06-01",
+        "networkSecurityGroups": "2017-06-01",
+        "publicIPAddresses": "2017-06-01",
+        "storageAccounts": "2017-06-01",
+        "virtualMachines": "2017-03-30",
+        "virtualMachinesExtensions": "2017-03-30",
+        "virtualNetworks": "2017-06-01"
+      },
       "typeHandlerVersion":"2.0",
       "contentVersion":"1.0.0.1"
     },
