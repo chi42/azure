@@ -1,0 +1,134 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.1",
+  "parameters": {
+    "virtualNetworkName": {
+      "type": "string",
+      "defaultValue": "clouderavnet",
+      "metadata": {
+        "description": "The name of the virtual network provisioned for the deployment"
+      }
+    },
+    "addressPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.0.0/16",
+      "metadata": {
+        "description": "Virtual Network address CIDR"
+      }
+    },
+    "subnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.0.0/16",
+      "metadata": {
+        "description": "CIDR for the subnet where VMs will be placed"
+      }
+    },
+    "masterNodeIPAddress": {
+      "type": "string",
+      "defaultValue": "10.3.0.4",
+      "metadata": {
+        "description": "IP address for the first master"
+      }
+    }
+  },
+  "variables": {
+    "templateAPIVersion":"2017-05-10",
+    "resourceAPIVersions": {
+      "virtualNetworks": "2017-06-01",
+      "availabilitySets": "2017-03-30",
+      "networkSecurityGroups": "2017-06-01",
+      "storageAccounts": "2017-06-01",
+      "publicIPAddresses": "2017-06-01",
+      "networkInterfaces": "2017-06-01",
+      "virtualMachines": "2017-03-30",
+      "virtualMachinesExtensions": "2017-03-30"
+    },
+    "addressPrefix":"[parameters('addressPrefix')]",
+    "subnetPrefix":"[parameters('subnetPrefix')]",
+    "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
+    "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
+    "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
+    "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 0, 13)), '.json')]",
+    "sa": "[parameters('masterNodeIPAddress')]",
+    "ipOctet01": "[concat(split(variables('sa'), '.')[0], '.', split(variables('sa'), '.')[1], '.')]",
+    "ipOctet2": "[int(split(variables('sa'), '.')[2])]",
+    "ipOctet3": "[int(split(variables('sa'), '.')[3])]",
+    "networkSpec": {
+      "addressPrefix": "[variables('addressPrefix')]",
+      "subnetPrefix": "[variables('subnetPrefix')]",
+      "ipOctet01": "[variables('ipOctet01')]",
+      "ipOctet2": "[variables('ipOctet2')]",
+      "ipOctet3": "[variables('ipOctet3')]",
+      "datanodeIpOctet3":"[variables('datanodeIpOctet3')]",
+      "masterIP":"[variables('sa')]",
+      "workerIP":"[concat(variables('ipOctet01'), add(variables('ipOctet2'), div(variables('datanodeIpOctet3'), 255)), '.', mod(variables('datanodeIpOctet3'), 255))]",
+      "virtualNetworkName": "[parameters('virtualNetworkName')]",
+      "virtualNetworkRGName":"[parameters('virtualNetworkRGName')]",
+      "vnetNewOrExisting": "[parameters('vnetNewOrExisting')]",
+      "virtualNetworkSubnetName": "[parameters('subnetName')]"
+    },
+    "newVNetId":"[resourceId(concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName'))]",
+    "existingVNetId":"[resourceId(parameters('virtualNetworkRGName'),concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName'))]",
+    "VNetId": "[variables(concat(parameters('vnetNewOrExisting'),'VNetId'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('resourceAPIVersions').availabilitySets]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SSH",
+            "properties": {
+              "description": "Allows SSH traffic",
+              "protocol": "Tcp",
+             "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSpec').virtualNetworkName, '-sg')]"
+      ],
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('networkSpec').addressPrefix]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('networkSpec').virtualNetworkSubnetName]",
+            "properties": {
+              "addressPrefix": "[variables('networkSpec').subnetPrefix]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('networkSpec').virtualNetworkName, '-sg'))]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
