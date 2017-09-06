@@ -106,7 +106,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('resourceNamePrefix').virtualNetworkName, '-sg')]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('resourceNamePrefix'), '-sg')]"
       ],
       "location": "[resourceGroup().location]",
       "properties": {
