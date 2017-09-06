@@ -29,6 +29,13 @@
       "metadata": {
         "description": "IP address for the first master"
       }
+    },
+    "resourceNamePrefix": {
+      "type": "string",
+      "defaultValue": "quickstart",
+      "metadata": {
+        "description": "Resource name prefix"
+      }
     }
   },
   "variables": {
@@ -75,14 +82,14 @@
     {
       "apiVersion": "[variables('resourceAPIVersions').availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "",
+      "name": "[concat(parameters(resourceNamePrefix), '-as')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "",
+      "name": "[concat(parameters(resourceNamePrefix), '-sg')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
@@ -106,7 +113,7 @@
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "",
+      "name": "[concat(parameters(resourceNamePrefix), '-vnet')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSpec').virtualNetworkName, '-sg')]"
       ],
