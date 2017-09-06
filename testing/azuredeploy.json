@@ -54,7 +54,6 @@
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
     "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
-    "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 0, 13)), '.json')]",
     "sa": "[parameters('masterNodeIPAddress')]",
     "ipOctet01": "[concat(split(variables('sa'), '.')[0], '.', split(variables('sa'), '.')[1], '.')]",
     "ipOctet2": "[int(split(variables('sa'), '.')[2])]",
@@ -67,13 +66,9 @@
       "ipOctet3": "[variables('ipOctet3')]",
       "datanodeIpOctet3":"[variables('datanodeIpOctet3')]",
       "masterIP":"[variables('sa')]",
-      "workerIP":"[concat(variables('ipOctet01'), add(variables('ipOctet2'), div(variables('datanodeIpOctet3'), 255)), '.', mod(variables('datanodeIpOctet3'), 255))]",
       "virtualNetworkName": "[parameters('virtualNetworkName')]",
-      "virtualNetworkRGName":"[parameters('virtualNetworkRGName')]",
-      "virtualNetworkSubnetName": "[parameters('subnetName')]"
-    },
-    "newVNetId":"[resourceId(concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName'))]",
-    "existingVNetId":"[resourceId(parameters('virtualNetworkRGName'),concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName'))]"
+      "virtualNetworkSubnetName": "default"
+    }
   },
   "resources": [
     {
@@ -112,7 +107,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[concat(parameters(resourceNamePrefix), '-vnet')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSpec').virtualNetworkName, '-sg')]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('resourceNamePrefix').virtualNetworkName, '-sg')]"
       ],
       "location": "[resourceGroup().location]",
       "properties": {
