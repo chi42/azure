@@ -64,7 +64,6 @@
       "ipOctet01": "[variables('ipOctet01')]",
       "ipOctet2": "[variables('ipOctet2')]",
       "ipOctet3": "[variables('ipOctet3')]",
-      "datanodeIpOctet3":"[variables('datanodeIpOctet3')]",
       "masterIP":"[variables('sa')]",
       "virtualNetworkName": "[parameters('virtualNetworkName')]",
       "virtualNetworkSubnetName": "default"
