@@ -73,14 +73,14 @@
     {
       "apiVersion": "[variables('resourceAPIVersions').availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "[concat(parameters(resourceNamePrefix), '-as')]",
+      "name": "[concat(parameters('resourceNamePrefix'), '-as')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[concat(parameters(resourceNamePrefix), '-sg')]",
+      "name": "[concat(parameters('resourceNamePrefix'), '-sg')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
@@ -104,7 +104,7 @@
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "[concat(parameters(resourceNamePrefix), '-vnet')]",
+      "name": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', parameters('resourceNamePrefix').virtualNetworkName, '-sg')]"
       ],
