@@ -64,23 +64,28 @@
       "ipOctet01": "[variables('ipOctet01')]",
       "ipOctet2": "[variables('ipOctet2')]",
       "ipOctet3": "[variables('ipOctet3')]",
-      "masterIP":"[variables('sa')]",
+      "bindVmIp":"[variables('sa')]",
       "virtualNetworkName": "[parameters('virtualNetworkName')]",
       "virtualNetworkSubnetName": "default"
-    }
+    },
+
+    "availabilitySetName": "[concat(parameters('resourceNamePrefix'), '-as')]",
+    "networkSecurityGroupName": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
+    "virtualNetworkName": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
+    "bindVmName": "[concat(parameters('resourceNamePrefix'), '-bindVm')]"
   },
   "resources": [
     {
       "apiVersion": "[variables('resourceAPIVersions').availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "[concat(parameters('resourceNamePrefix'), '-as')]",
+      "name": "[variables('availabilitySetName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[concat(parameters('resourceNamePrefix'), '-sg')]",
+      "name": "[variables('networkSecurityGroupName')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
@@ -104,7 +109,7 @@
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
+      "name": "[variables('virtualNetworkName')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', parameters('resourceNamePrefix'), '-sg')]"
       ],
@@ -127,6 +132,141 @@
           }
         ]
       }
+    },
+
+    {
+      "type": "Microsoft.Compute/disks",
+      "name": "[concat(variables('bindVmName'), '-datadisk0')]",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "creationData": {
+        "createOption": "Empty"
+        },
+        "diskSizeGB": 1023
+      }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersions.networkInterfaces]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('bindVmName'), '-nic']",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[variables('bindVmIp')]",
+              "subnet": {
+                "id": "[concat('FIXME', '/subnets/', parameters('networkSpec').virtualNetworkSubnetName)]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+        }
+      }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachines]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('vmName'))]",
+      "plan": {
+        "name": "cloudera-centos-6",
+        "publisher": "cloudera",
+        "product": "cloudera-centos-6"
+      },
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSpec').vmSize]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmName')]",
+          "adminUsername": "[parameters('vmSpec').adminUsername]",
+          "adminPassword": "[parameters('vmSpec').adminPassword]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": "false"
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "cloudera",
+            "offer": "cloudera-centos-6",
+            "sku": "CLOUDERA-CENTOS-6",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('storageAccountContainerName'), '/', variables('vmName'),'.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "name": "datadisk0",
+              "diskSizeGB": "128",
+              "lun": 0,
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('storageAccountContainerName'), '/', variables('vmName'),'-datadisk0.vhd')]"
+              },
+              "caching": "ReadWrite",
+              "createOption": "Empty"
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName')))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'), '/bootstrapServer')]",
+      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachinesExtensions]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
+            "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]",
+            "[concat(parameters('scriptsUri'), '/scripts/director_user_passwd.py')]"
+          ]
+        },
+        "protectedSettings":{
+          "commandToExecute": "[concat('sh initialize-director-server.sh ', variables('singleQuote'), parameters('vmSpec').adminUsername, variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('networkSpec').directorServerIPAddress, variables('singleQuote'), ' ', variables('singleQuote'), parameters('vmSpec').dbUsername, variables('singleQuote'), ' ', variables('singleQuote'), parameters('vmSpec').dbPassword, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').company, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').emailAddress, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').businessPhone, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').firstName, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').lastName, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').jobRole, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').jobFunction, variables('singleQuote'), ' ', variables('singleQuote'), parameters('clusterParameters').dirUsername, variables('singleQuote'), ' ', variables('singleQuote'), parameters('clusterParameters').dirPassword, variables('singleQuote'))]"
+        }
+      }
     }
+
   ]
 }

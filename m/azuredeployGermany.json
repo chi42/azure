@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "adminUserName": {
+    "adminUsername": {
       "type": "string",
       "defaultValue": "azureuser",
       "metadata": {
@@ -230,8 +230,17 @@
     }
   },
   "variables": {
-    "templateAPIVersion":"2015-11-01",
-    "resourceAPIVersion":"2015-06-15",
+    "templateAPIVersion":"2017-05-10",
+    "resourceAPIVersions": {
+      "availabilitySets": "2017-03-30",
+      "networkInterfaces": "2017-06-01",
+      "networkSecurityGroups": "2017-06-01",
+      "publicIPAddresses": "2017-06-01",
+      "storageAccounts": "2017-06-01",
+      "virtualMachines": "2017-03-30",
+      "virtualMachinesExtensions": "2017-03-30",
+      "virtualNetworks": "2017-06-01"
+    },
     "installCDH":"True",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
@@ -303,7 +312,7 @@
     "vmSpec": {
       "vmSize": "[parameters('vmSize')]",
       "imageInfo": "[variables('vmImageInfo')[parameters('vmImage')]]",
-      "adminUserName": "[parameters('adminUserName')]",
+      "adminUsername": "[parameters('adminUsername')]",
       "adminPassword": "[parameters('adminPassword')]",
       "masterNodeASName": "[concat(parameters('dnsNamePrefix'), '-mnAS')]",
       "dataNodeASName": "[concat(parameters('dnsNamePrefix'), '-dnAS')]"
@@ -338,8 +347,8 @@
           "contentVersion": "1.0.0.1"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
@@ -370,8 +379,8 @@
           "vnetID":{
             "value":"[variables('VNetId')]"
           },
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -417,8 +426,8 @@
           "templateAPIVersion":{
             "value":"[variables('templateAPIVersion')]"
           },
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -459,8 +468,8 @@
           "contentVersion": "1.0.0.1"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "resourceAPIVersions":{
+            "value":"[variables('resourceAPIVersions')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"

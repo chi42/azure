@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "adminUserName": {
+    "adminUsername": {
       "type": "string",
       "defaultValue": "azureuser",
       "metadata": {
@@ -232,14 +232,14 @@
   "variables": {
     "templateAPIVersion":"2017-05-10",
     "resourceAPIVersions": {
-      "virtualNetworks": "2017-06-01",
       "availabilitySets": "2017-03-30",
-      "networkSecurityGroups": "2017-06-01",
-      "storageAccounts": "2017-06-01",
-      "publicIPAddresses": "2017-06-01",
       "networkInterfaces": "2017-06-01",
+      "networkSecurityGroups": "2017-06-01",
+      "publicIPAddresses": "2017-06-01",
+      "storageAccounts": "2017-06-01",
       "virtualMachines": "2017-03-30",
-      "virtualMachinesExtensions": "2017-03-30"
+      "virtualMachinesExtensions": "2017-03-30",
+      "virtualNetworks": "2017-06-01"
     },
     "installCDH":"True",
     "addressPrefix":"[parameters('addressPrefix')]",
@@ -312,7 +312,7 @@
     "vmSpec": {
       "vmSize": "[parameters('vmSize')]",
       "imageInfo": "[variables('vmImageInfo')[parameters('vmImage')]]",
-      "adminUserName": "[parameters('adminUserName')]",
+      "adminUsername": "[parameters('adminUsername')]",
       "adminPassword": "[parameters('adminPassword')]",
       "masterNodeASName": "[concat(parameters('dnsNamePrefix'), '-mnAS')]",
       "dataNodeASName": "[concat(parameters('dnsNamePrefix'), '-dnAS')]"
