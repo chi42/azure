@@ -32,7 +32,8 @@
     }
   },
   "variables": {
-    "templateAPIVersion":"2017-05-10",
+    "templateAPIVersion": "2017-05-10",
+    "typeHandlerVersion": "2.0",
     "resourceAPIVersions": {
       "virtualNetworks": "2017-06-01",
       "availabilitySets": "2017-03-30",
@@ -43,11 +44,12 @@
       "virtualMachinesExtensions": "2017-03-30"
     },
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
-    "scriptsUriFIXME": "[uri(deployment().properties.templateLink.uri, '.')]",
+    "scriptsUriFIXME": " FIXME [uri(deployment().properties.templateLink.uri, '.')]",
     "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/testing",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "bindVmIp": "[parameters('dnsVmIpAddress')]",
+    "username": "chi",
 
     "names": {
       "availabilitySet": "[concat(parameters('resourceNamePrefix'), '-as')]",
@@ -59,6 +61,7 @@
     },
 
     "vNetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('names').virtualNetwork)]",
+    "dnsNameSuffix": "fixmefixme",
     "singleQuote": "'"
   },
   "resources": [
@@ -233,21 +236,21 @@
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('name').bindVm)]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('names').bindVm)]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
         "type": "CustomScript",
-        "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
+        "typeHandlerVersion": "[variables('typeHandlerVersion')]",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-vm.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
+            "[concat(variables('scriptsUri'), '/initialize-vm.sh')]",
+            "[concat(variables('scriptsUri'), '/initialize-dns-server.sh')]"
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-vm.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('networkSpec').directorServerIPAddress, variables('singleQuote'), ' ', variables('singleQuote'), parameters('clusterParameters').dirUsername, variables('singleQuote'))]"
+          "commandToExecute": "[concat('sh initialize-vm.sh ', ' ', variables('singleQuote'), variables('username'), variables('singleQuote'), ' ', variables('singleQuote'), variables('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), variables('bindVmIp'), variables('singleQuote'))]"
         }
       }
     }

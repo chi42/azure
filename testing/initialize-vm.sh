@@ -67,6 +67,23 @@ fi
 
 log "Installing basic tools ... Successful"
 
+log "Installing Cloudera Director Server, Client, Plugins and dependencies ..."
+
+# install with retry
+n=0
+until [ ${n} -ge 5 ]
+do
+    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.* cloudera-director-client-2.* >> ${LOG_FILE} 2>&1 && break
+    n=$((n+1))
+    sleep ${SLEEP_INTERVAL}
+done
+
+if [ ${n} -ge 5 ]; then
+  log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Failed" & exit 1;
+fi
+
+log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Successful"
+
 ##
 ## Disable iptables so API calls to Director server works.
 ##
