@@ -2,13 +2,6 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "virtualNetworkName": {
-      "type": "string",
-      "defaultValue": "clouderavnet",
-      "metadata": {
-        "description": "The name of the virtual network provisioned for the deployment"
-      }
-    },
     "addressPrefix": {
       "type": "string",
       "defaultValue": "10.3.0.0/16",
@@ -23,7 +16,7 @@
         "description": "CIDR for the subnet where VMs will be placed"
       }
     },
-    "masterNodeIPAddress": {
+    "dnsVmIpAddress": {
       "type": "string",
       "defaultValue": "10.3.0.4",
       "metadata": {
@@ -44,48 +37,42 @@
       "virtualNetworks": "2017-06-01",
       "availabilitySets": "2017-03-30",
       "networkSecurityGroups": "2017-06-01",
-      "storageAccounts": "2017-06-01",
       "publicIPAddresses": "2017-06-01",
       "networkInterfaces": "2017-06-01",
       "virtualMachines": "2017-03-30",
       "virtualMachinesExtensions": "2017-03-30"
     },
+    "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
+    "scriptsUriFIXME": "[uri(deployment().properties.templateLink.uri, '.')]",
+    "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/testing",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
-    "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
-    "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
-    "sa": "[parameters('masterNodeIPAddress')]",
-    "ipOctet01": "[concat(split(variables('sa'), '.')[0], '.', split(variables('sa'), '.')[1], '.')]",
-    "ipOctet2": "[int(split(variables('sa'), '.')[2])]",
-    "ipOctet3": "[int(split(variables('sa'), '.')[3])]",
-    "networkSpec": {
-      "addressPrefix": "[variables('addressPrefix')]",
-      "subnetPrefix": "[variables('subnetPrefix')]",
-      "ipOctet01": "[variables('ipOctet01')]",
-      "ipOctet2": "[variables('ipOctet2')]",
-      "ipOctet3": "[variables('ipOctet3')]",
-      "bindVmIp":"[variables('sa')]",
-      "virtualNetworkName": "[parameters('virtualNetworkName')]",
-      "virtualNetworkSubnetName": "default"
+    "bindVmIp": "[parameters('dnsVmIpAddress')]",
+
+    "names": {
+      "availabilitySet": "[concat(parameters('resourceNamePrefix'), '-as')]",
+      "networkSecurityGroup": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
+      "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
+      "virtualNetworkSubnet": "default",
+      "bindVm": "[concat(parameters('resourceNamePrefix'), '-bindVm')]",
+      "bindVmNic": "[concat(parameters('resourceNamePrefix'), '-bindVm-nic')]"
     },
 
-    "availabilitySetName": "[concat(parameters('resourceNamePrefix'), '-as')]",
-    "networkSecurityGroupName": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
-    "virtualNetworkName": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
-    "bindVmName": "[concat(parameters('resourceNamePrefix'), '-bindVm')]"
+    "vNetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('names').virtualNetwork)]",
+    "singleQuote": "'"
   },
   "resources": [
     {
       "apiVersion": "[variables('resourceAPIVersions').availabilitySets]",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('availabilitySetName')]",
+      "name": "[variables('names').availabilitySet]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('networkSecurityGroupName')]",
+      "name": "[variables('names').networkSecurityGroup]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
@@ -109,24 +96,24 @@
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('virtualNetworkName')]",
+      "name": "[variables('names').virtualNetwork]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('resourceNamePrefix'), '-sg')]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]"
       ],
       "location": "[resourceGroup().location]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('networkSpec').addressPrefix]"
+            "[variables('addressPrefix')]"
           ]
         },
         "subnets": [
           {
-            "name": "[variables('networkSpec').virtualNetworkSubnetName]",
+            "name": "[variables('names').virtualNetworkSubnet]",
             "properties": {
-              "addressPrefix": "[variables('networkSpec').subnetPrefix]",
+              "addressPrefix": "[variables('subnetPrefix')]",
               "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('networkSpec').virtualNetworkName, '-sg'))]"
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('names').networkSecurityGroup)]"
               }
             }
           }
@@ -135,27 +122,14 @@
     },
 
     {
-      "type": "Microsoft.Compute/disks",
-      "name": "[concat(variables('bindVmName'), '-datadisk0')]",
-      "apiVersion": "2017-03-30",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "properties": {
-        "creationData": {
-        "createOption": "Empty"
-        },
-        "diskSizeGB": 1023
-      }
-    },
-    {
-      "apiVersion": "[parameters('version').resourceAPIVersions.networkInterfaces]",
+      "apiVersion": "[variables('resourceAPIVersions').networkInterfaces]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('bindVmName'), '-nic']",
+      "name": "[variables('names').bindVmNic]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('names').virtualNetwork)]",
+        "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {
         "ipConfigurations": [
@@ -165,20 +139,41 @@
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[variables('bindVmIp')]",
               "subnet": {
-                "id": "[concat('FIXME', '/subnets/', parameters('networkSpec').virtualNetworkSubnetName)]"
+                "id": "[concat(variables('vNetId'), '/subnets/', variables('names').virtualNetworkSubnet)]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'publicip')]"
               }
             }
           }
         ],
         "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('names').networkSecurityGroup)]"
         }
       }
     },
+
+
     {
-      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachines]",
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "publicip",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "bindvm"
+        }
+      }
+    },
+
+
+
+
+    {
+      "apiVersion": "[variables('resourceAPIVersions').virtualMachines]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName'))]",
+      "name": "[concat(variables('names').bindVm)]",
       "plan": {
         "name": "cloudera-centos-6",
         "publisher": "cloudera",
@@ -186,17 +181,17 @@
       },
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('names').bindVmNic)]",
+        "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSpec').vmSize]"
+          "vmSize": "Standard_A1_v2"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('vmSpec').adminUsername]",
-          "adminPassword": "[parameters('vmSpec').adminPassword]",
+          "computerName": "[variables('names').bindVm]",
+          "adminUsername": "chi",
+          "adminPassword": "pass42Wordup",
           "linuxConfiguration": {
             "disablePasswordAuthentication": "false"
           }
@@ -210,9 +205,6 @@
           },
           "osDisk": {
             "name": "osdisk",
-            "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('storageAccountContainerName'), '/', variables('vmName'),'.vhd')]"
-            },
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
@@ -221,9 +213,6 @@
               "name": "datadisk0",
               "diskSizeGB": "128",
               "lun": 0,
-              "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('storageAccountContainerName'), '/', variables('vmName'),'-datadisk0.vhd')]"
-              },
               "caching": "ReadWrite",
               "createOption": "Empty"
             }
@@ -232,7 +221,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName')))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('names').bindVmNic)]"
             }
           ]
         }
@@ -240,11 +229,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'), '/bootstrapServer')]",
-      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachinesExtensions]",
+      "name": "[concat(variables('names').bindVm, '/bootstrapServer')]",
+      "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('name').bindVm)]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -253,20 +242,14 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
-            "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]",
-            "[concat(parameters('scriptsUri'), '/scripts/director_user_passwd.py')]"
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-vm.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-director-server.sh ', variables('singleQuote'), parameters('vmSpec').adminUsername, variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('networkSpec').directorServerIPAddress, variables('singleQuote'), ' ', variables('singleQuote'), parameters('vmSpec').dbUsername, variables('singleQuote'), ' ', variables('singleQuote'), parameters('vmSpec').dbPassword, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').company, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').emailAddress, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').businessPhone, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').firstName, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').lastName, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').jobRole, variables('singleQuote'), ' ', variables('singleQuote'), parameters('userInfo').jobFunction, variables('singleQuote'), ' ', variables('singleQuote'), parameters('clusterParameters').dirUsername, variables('singleQuote'), ' ', variables('singleQuote'), parameters('clusterParameters').dirPassword, variables('singleQuote'))]"
+          "commandToExecute": "[concat('sh initialize-vm.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('networkSpec').directorServerIPAddress, variables('singleQuote'), ' ', variables('singleQuote'), parameters('clusterParameters').dirUsername, variables('singleQuote'))]"
         }
       }
     }
-
   ]
 }
