@@ -67,33 +67,22 @@ fi
 
 log "Installing basic tools ... Successful"
 
-log "Installing Cloudera Director Server, Client, Plugins and dependencies ..."
+log "Installing BIND and dependencies ..."
 
 # install with retry
 n=0
 until [ ${n} -ge 5 ]
 do
-    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.* cloudera-director-client-2.* >> ${LOG_FILE} 2>&1 && break
+    sudo yum install -y bind bind-utils >> ${LOG_FILE} 2>&1 && break
     n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
 
 if [ ${n} -ge 5 ]; then
-  log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Failed" & exit 1;
+  log "Installing BIND and dependencies ... Failed" & exit 1;
 fi
 
-log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Successful"
-
-##
-## Disable iptables so API calls to Director server works.
-##
-#
-#log "Disabling iptables ..."
-#
-#sudo chkconfig iptables off
-#sudo service iptables stop
-#
-#log "Disabling iptables ... Successful"
+log "Installing BIND and dependencies ... Successful"
 
 #
 # Setup DNS server
