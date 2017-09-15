@@ -218,8 +218,8 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(variables('scriptsUri'), '/initialize-vm.sh')]",
-            "[concat(variables('scriptsUri'), '/initialize-dns-server.sh')]"
+            "[concat(variables('scriptsUri'), '/scripts/initialize-vm.sh')]",
+            "[concat(variables('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ]
         },
         "protectedSettings":{

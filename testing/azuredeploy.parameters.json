@@ -15,10 +15,10 @@
       "value": "quickstart"
     },
     "dnsNamePrefix": {
-      "value": "iamuniquename"
+      "value": "azuredns"
     },
     "dnsNameSuffix": {
-      "value": "thisdomain"
+      "value": "quickstart"
     },
     "addressPrefix": {
       "value": "10.3.0.0/16"
