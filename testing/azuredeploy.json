@@ -2,32 +2,56 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "addressPrefix": {
+    "adminUsername": {
       "type": "string",
-      "defaultValue": "10.3.0.0/16",
+      "defaultValue": "azureuser",
       "metadata": {
-        "description": "Virtual Network address CIDR"
+        "description": "Admin user name for the DNS VM"
       }
     },
-    "subnetPrefix": {
-      "type": "string",
-      "defaultValue": "10.3.0.0/16",
+    "adminPassword": {
+      "type": "securestring",
       "metadata": {
-        "description": "CIDR for the subnet where VMs will be placed"
+        "description": "Admin password for the DNS VM (A mix of upper and lower-case characters, digits and symbols)"
       }
+    },
+    "instanceType": {
+      "type": "string",
+      "defaultValue": "Standard_A1_v2",
+      "metadata": {
+        "description": "The instance type of the DNS VM"
+      }
+    },
+    "resourceNamePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Prefix for naming resources"
+      }
+    },
+    "dnsNamePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS name prefix where the VM will be exposed"
+      }
+    },
+    "dnsNameSuffix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS suffix where the VMs will be exposed"
+        }
     },
     "dnsVmIpAddress": {
       "type": "string",
       "defaultValue": "10.3.0.4",
       "metadata": {
-        "description": "IP address for the first master"
+        "description": "IP address for the DNS Vm"
       }
     },
-    "resourceNamePrefix": {
+    "addressPrefix": {
       "type": "string",
-      "defaultValue": "quickstart",
+      "defaultValue": "10.3.0.0/16",
       "metadata": {
-        "description": "Resource name prefix"
+        "description": "Virtual Network address CIDR"
       }
     }
   },
@@ -36,42 +60,24 @@
     "typeHandlerVersion": "2.0",
     "resourceAPIVersions": {
       "virtualNetworks": "2017-06-01",
-      "availabilitySets": "2017-03-30",
       "networkSecurityGroups": "2017-06-01",
-      "publicIPAddresses": "2017-06-01",
       "networkInterfaces": "2017-06-01",
       "virtualMachines": "2017-03-30",
       "virtualMachinesExtensions": "2017-03-30"
     },
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
-    "scriptsUriFIXME": " FIXME [uri(deployment().properties.templateLink.uri, '.')]",
-    "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/testing",
-    "addressPrefix":"[parameters('addressPrefix')]",
-    "subnetPrefix":"[parameters('subnetPrefix')]",
-    "bindVmIp": "[parameters('dnsVmIpAddress')]",
-    "username": "chi",
-
+    "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
     "names": {
-      "availabilitySet": "[concat(parameters('resourceNamePrefix'), '-as')]",
       "networkSecurityGroup": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
       "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
       "virtualNetworkSubnet": "default",
-      "bindVm": "[concat(parameters('resourceNamePrefix'), '-bindVm')]",
-      "bindVmNic": "[concat(parameters('resourceNamePrefix'), '-bindVm-nic')]"
+      "dnsVm": "[parameters('dnsNamePrefix')]",
+      "dnsVmNic": "[concat(parameters('dnsNamePrefix'), '-nic')]"
     },
-
     "vNetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('names').virtualNetwork)]",
-    "dnsNameSuffix": "fixmefixme",
     "singleQuote": "'"
   },
   "resources": [
-    {
-      "apiVersion": "[variables('resourceAPIVersions').availabilitySets]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('names').availabilitySet]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
-    },
     {
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -107,14 +113,14 @@
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('addressPrefix')]"
+            "[parameters('addressPrefix')]"
           ]
         },
         "subnets": [
           {
             "name": "[variables('names').virtualNetworkSubnet]",
             "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]",
+              "addressPrefix": "[parameters('addressPrefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('names').networkSecurityGroup)]"
               }
@@ -123,16 +129,14 @@
         ]
       }
     },
-
     {
       "apiVersion": "[variables('resourceAPIVersions').networkInterfaces]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('names').bindVmNic]",
+      "name": "[variables('names').dnsVmNic]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('names').virtualNetwork)]",
-        "['Microsoft.Network/publicIPAddresses/publicip']"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('names').virtualNetwork)]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -140,12 +144,9 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[variables('bindVmIp')]",
+              "privateIPAddress": "[parameters('dnsVmIpAddress')]",
               "subnet": {
                 "id": "[concat(variables('vNetId'), '/subnets/', variables('names').virtualNetworkSubnet)]"
-              },
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'publicip')]"
               }
             }
           }
@@ -155,28 +156,10 @@
         }
       }
     },
-
-
-    {
-      "apiVersion": "2017-06-01",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "publicip",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "dnsSettings": {
-          "domainNameLabel": "bindvm"
-        }
-      }
-    },
-
-
-
-
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualMachines]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('names').bindVm)]",
+      "name": "[concat(variables('names').dnsVm)]",
       "plan": {
         "name": "cloudera-centos-6",
         "publisher": "cloudera",
@@ -184,17 +167,16 @@
       },
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('names').bindVmNic)]",
-        "['Microsoft.Network/publicIPAddresses/publicip']"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('names').dnsVmNic)]"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_A1_v2"
+          "vmSize": "[parameters('instanceType')]"
         },
         "osProfile": {
-          "computerName": "[variables('names').bindVm]",
-          "adminUsername": "chi",
-          "adminPassword": "pass42Wordup",
+          "computerName": "[variables('names').dnsVm]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": "false"
           }
@@ -210,21 +192,12 @@
             "name": "osdisk",
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          },
-          "dataDisks": [
-            {
-              "name": "datadisk0",
-              "diskSizeGB": "128",
-              "lun": 0,
-              "caching": "ReadWrite",
-              "createOption": "Empty"
-            }
-          ]
+          }
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('names').bindVmNic)]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('names').dnsVmNic)]"
             }
           ]
         }
@@ -232,11 +205,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('names').bindVm, '/bootstrapServer')]",
+      "name": "[concat(variables('names').dnsVm, '/bootstrapServer')]",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('names').bindVm)]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('names').dnsVm)]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -250,7 +223,7 @@
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-vm.sh ', ' ', variables('singleQuote'), variables('username'), variables('singleQuote'), ' ', variables('singleQuote'), variables('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), variables('bindVmIp'), variables('singleQuote'))]"
+          "commandToExecute": "[concat('sh initialize-vm.sh ', ' ', variables('singleQuote'), parameters('adminUsername'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsVmIpAddress'), variables('singleQuote'))]"
         }
       }
     }

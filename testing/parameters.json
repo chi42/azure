@@ -2,17 +2,29 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "addressPrefix": {
-      "value": "10.3.0.0/16"
+    "adminUsername": {
+      "value": "azure"
     },
-    "subnetPrefix": {
+    "adminPassword": {
+      "value": "KdjK32zn"
+    },
+    "instanceType": {
+      "value": "Standard_A1_v2"
+    },
+    "resourceNamePrefix": {
+      "value": "quickstart"
+    },
+    "dnsNamePrefix": {
+      "value": "iamuniquename"
+    },
+    "dnsNameSuffix": {
+      "value": "thisdomain"
+    },
+    "addressPrefix": {
       "value": "10.3.0.0/16"
     },
     "dnsVmIpAddress": {
       "value": "10.3.0.4"
-    },
-    "resourceNamePrefix": {
-      "value": "nwongqtest"
     }
   }
 }
