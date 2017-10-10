@@ -15,10 +15,10 @@
       "value": "quickstart"
     },
     "dnsNamePrefix": {
-      "value": "azuredns"
+      "value": "dns"
     },
     "dnsNameSuffix": {
-      "value": "quickstart"
+      "value": "cdh-cluster.internal"
     },
     "addressPrefix": {
       "value": "10.3.0.0/16"
