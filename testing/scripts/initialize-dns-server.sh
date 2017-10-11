@@ -190,7 +190,7 @@ sudo chkconfig named on
 
 # dhclient-exit-hooks explained in dhclient-script man page: http://linux.die.net/man/8/dhclient-script
 # cat a here-doc represenation of the hooks to the appropriate file
-cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
+sudo cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
 #!/bin/bash
 printf "\ndhclient-exit-hooks running...\n\treason:%s\n\tinterface:%s\n" "${reason:?}" "${interface:?}"
 # only execute on the primary nic
@@ -205,10 +205,10 @@ EOF
 # this is a separate here-doc because there's two sets of variable substitution going on, this set
 # needs to be evaluated when written to the file, the two others (with "EOF" surrounded by quotes)
 # should not have variable substitution occur when creating the file.
-cat >> /etc/dhcp/dhclient-exit-hooks <<EOF
-    domain=${internal_fqdn_suffix}
+sudo cat >> /etc/dhcp/dhclient-exit-hooks <<EOF
+    domain=${INTERNAL_FQDN_SUFFIX}
 EOF
-cat >> /etc/dhcp/dhclient-exit-hooks <<"EOF"
+sudo cat >> /etc/dhcp/dhclient-exit-hooks <<"EOF"
     resolvconfupdate=$(mktemp -t resolvconfupdate.XXXXXXXXXX)
     echo updating resolv.conf
     grep -iv "search" /etc/resolv.conf > "$resolvconfupdate"
@@ -218,6 +218,8 @@ fi
 #done
 exit 0;
 EOF
-chmod 755 /etc/dhcp/dhclient-exit-hooks
+sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
+
+sudo service network restart
 
 exit 0
