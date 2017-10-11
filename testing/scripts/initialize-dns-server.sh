@@ -193,9 +193,8 @@ sudo chkconfig named on
 # Add dhclient-exit-hooks to update the DNS search server
 #
 
-# Taken from https://github.com/cloudera/director-scripts/blob/master/azure-dns-scripts/bootstrap_dns.sh
-# cat a here-doc representation of the hooks to the appropriate file
-sudo cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
+# cat a here-doc represenation of the hooks to the appropriate file
+cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
 #!/bin/bash
 printf "\ndhclient-exit-hooks running...\n\treason:%s\n\tinterface:%s\n" "${reason:?}" "${interface:?}"
 # only execute on the primary nic
@@ -203,27 +202,36 @@ if [ "$interface" != "eth0" ]
 then
     exit 0;
 fi
-# when we have a new IP, update the search domain
+# when we have a new IP, perform nsupdate
 if [ "$reason" = BOUND ] || [ "$reason" = RENEW ] ||
    [ "$reason" = REBIND ] || [ "$reason" = REBOOT ]
 then
-EOF
-# this is a separate here-doc because there's two sets of variable substitution going on, this set
-# needs to be evaluated when written to the file, the two others (with "EOF" surrounded by quotes)
-# should not have variable substitution occur when creating the file.
-sudo cat >> /etc/dhcp/dhclient-exit-hooks <<EOF
-    domain=${INTERNAL_FQDN_SUFFIX}
-EOF
-sudo cat >> /etc/dhcp/dhclient-exit-hooks <<"EOF"
+    printf "\tnew_ip_address:%s\n" "${new_ip_address:?}"
+    host=$(hostname -s)
+    domain=$(hostname | cut -d'.' -f2- -s)
+    domain=${domain:='cdh-cluster.internal'} # If no hostname is provided, use cdh-cluster.internal
+    IFS='.' read -ra ipparts <<< "$new_ip_address"
+    ptrrec="$(printf %s "$new_ip_address." | tac -s.)in-addr.arpa"
+    nsupdatecmds=$(mktemp -t nsupdate.XXXXXXXXXX)
     resolvconfupdate=$(mktemp -t resolvconfupdate.XXXXXXXXXX)
     echo updating resolv.conf
     grep -iv "search" /etc/resolv.conf > "$resolvconfupdate"
     echo "search $domain" >> "$resolvconfupdate"
     cat "$resolvconfupdate" > /etc/resolv.conf
+    echo "Attempting to register $host.$domain and $ptrrec"
+    {
+        echo "update delete $host.$domain a"
+        echo "update add $host.$domain 600 a $new_ip_address"
+        echo "send"
+        echo "update delete $ptrrec ptr"
+        echo "update add $ptrrec 600 ptr $host.$domain"
+        echo "send"
+    } > "$nsupdatecmds"
+    nsupdate "$nsupdatecmds"
 fi
 #done
 exit 0;
 EOF
-sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
+chmod 755 /etc/dhcp/dhclient-exit-hooks
 
 exit 0
