@@ -61,6 +61,7 @@
     "resourceAPIVersions": {
       "virtualNetworks": "2017-06-01",
       "networkSecurityGroups": "2017-06-01",
+      "publicIPAddresses": "2017-06-01",
       "networkInterfaces": "2017-06-01",
       "virtualMachines": "2017-03-30",
       "virtualMachinesExtensions": "2017-03-30"
@@ -136,7 +137,8 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('names').virtualNetwork)]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('names').virtualNetwork)]",
+        "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {
         "ipConfigurations": [
@@ -147,6 +149,9 @@
               "privateIPAddress": "[parameters('dnsVmIpAddress')]",
               "subnet": {
                 "id": "[concat(variables('vNetId'), '/subnets/', variables('names').virtualNetworkSubnet)]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'publicip')]"
               }
             }
           }
@@ -156,6 +161,21 @@
         }
       }
     },
+
+    {
+      "apiVersion": "2017-06-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[variables('names').dnsVm]"
+        }
+      }
+    },
+
+
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualMachines]",
       "type": "Microsoft.Compute/virtualMachines",
@@ -167,7 +187,8 @@
       },
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('names').dnsVmNic)]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('names').dnsVmNic)]",
+        "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {
         "hardwareProfile": {

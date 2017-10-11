@@ -226,10 +226,4 @@ exit 0;
 EOF
 sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
 
-#
-# Now it's time to update Azure DNS settings in portal
-#
-
-log "Go to -- portal.azure.com -- confirm Azure DNS points to the private IP of this host: ${internal_ip}"
-
 exit 0
