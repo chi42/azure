@@ -267,6 +267,9 @@
           },
           "addressPrefix": {
             "value": "[parameters('addressPrefix')]"
+          },
+          "dnsIp": {
+            "value": "[parameters('dnsVmIpAddress')]"
           }
         }
       }
