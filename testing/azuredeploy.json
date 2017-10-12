@@ -133,7 +133,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]",
-        "[Microsoft.Resources/deployments/create-vnet]",
+        "['Microsoft.Resources/deployments/create-vnet']",
         "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {
