@@ -57,6 +57,7 @@
   },
   "variables": {
     "templateAPIVersion": "2017-05-10",
+    "contentVersion": "1.0.0.1",
     "typeHandlerVersion": "2.0",
     "resourceAPIVersions": {
       "virtualNetworks": "2017-06-01",
@@ -103,32 +104,25 @@
       }
     },
     {
-      "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('names').virtualNetwork]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]"
-      ],
-      "location": "[resourceGroup().location]",
+      "name": "create-vnet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('templateAPIVersion')]",
       "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('addressPrefix')]"
-          ]
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/create-vnet.json')]",
+          "contentVersion": "[variables('contentVersion')]"
         },
-        "subnets": [
-          {
-            "name": "[variables('names').virtualNetworkSubnet]",
-            "properties": {
-              "addressPrefix": "[parameters('addressPrefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('names').networkSecurityGroup)]"
-              }
-            }
+        "parameters": {
+          "names": {
+            "values": "[variables('names')]"
+          },
+          "resourceAPIVersions": {
+            "values": "[variables('resourceAPIVersions')]"
+          },
+          "addressPrefix": {
+            "values": "[parameters('addressPrefix')]"
           }
-        ],
-        "dhcpOptions": {
-          "dnsServers": ["10.3.0.4"]
         }
       }
     },
@@ -139,7 +133,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('names').virtualNetwork)]",
+        "[Microsoft.Resources/deployments/create-vnet]",
         "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {

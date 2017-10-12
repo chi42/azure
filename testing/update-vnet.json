@@ -1,0 +1,46 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.1",
+  "parameters": {
+    "names": {
+      "type": "object"
+    },
+    "resourceAPIVersions": {
+      "type": "object"
+    },
+    "addressPrefix": {
+      "type": "string"
+    },
+    "dnsIp": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('names').virtualNetwork]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "dhcpOptions": {
+          "dnsServers": [
+            "[parameters('dnsIp')"
+          ]
+        },
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('names').virtualNetworkSubnet]",
+            "properties": {
+              "addressPrefix": "[parameters('addressPrefix')]"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
