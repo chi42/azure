@@ -250,7 +250,7 @@
       "type": "Microsoft.Resources/deployments",
       "name": "update-vnet",
       "dependsOn": [
-        "[variables('names').bootstrapScript]"
+        "[concat('Microsoft.Compute/virtualMachines/extensions/', variables('names').bootstrapScript)]"
       ],
       "properties": {
         "mode": "Incremental",
