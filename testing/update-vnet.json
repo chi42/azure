@@ -19,7 +19,7 @@
     {
       "apiVersion": "[parameters('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "[paramters('names').virtualNetwork]",
+      "name": "[parameters('names').virtualNetwork]",
       "location": "[resourceGroup().location]",
       "properties": {
         "dhcpOptions": {
