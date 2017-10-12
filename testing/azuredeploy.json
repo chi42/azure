@@ -57,7 +57,7 @@
   },
   "variables": {
     "templateAPIVersion": "2015-11-01",
-    "contentVersion": "1.0.0.1",
+    "contentVersion": "1.0.0.0",
     "typeHandlerVersion": "2.0",
     "resourceAPIVersions": {
       "virtualNetworks": "2017-06-01",
