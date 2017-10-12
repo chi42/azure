@@ -56,7 +56,7 @@
     }
   },
   "variables": {
-    "templateAPIVersion": "2017-05-10",
+    "templateAPIVersion": "2015-11-01",
     "contentVersion": "1.0.0.1",
     "typeHandlerVersion": "2.0",
     "resourceAPIVersions": {
