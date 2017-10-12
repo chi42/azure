@@ -104,9 +104,9 @@
       }
     },
     {
-      "name": "create-vnet",
-      "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
+      "type": "Microsoft.Resources/deployments",
+      "name": "create-vnet",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -115,13 +115,13 @@
         },
         "parameters": {
           "resourceAPIVersions": {
-            "values": "[variables('resourceAPIVersions')]"
+            "value": "[variables('resourceAPIVersions')]"
           },
           "names": {
-            "values": "[variables('names')]"
+            "value": "[variables('names')]"
           },
           "addressPrefix": {
-            "values": "[parameters('addressPrefix')]"
+            "value": "[parameters('addressPrefix')]"
           }
         }
       }
