@@ -243,6 +243,32 @@
           "commandToExecute": "[concat('sh initialize-vm.sh ', ' ', variables('singleQuote'), parameters('adminUsername'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsVmIpAddress'), variables('singleQuote'))]"
         }
       }
+    },
+    {
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "type": "Microsoft.Resources/deployments",
+      "name": "update-vnet",
+      "dependsOn": [
+        "[concat(variables('names').dnsVm, '/bootstrapServer')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/update-vnet.json')]",
+          "contentVersion": "[variables('contentVersion')]"
+        },
+        "parameters": {
+          "resourceAPIVersions": {
+            "value": "[variables('resourceAPIVersions')]"
+          },
+          "names": {
+            "value": "[variables('names')]"
+          },
+          "addressPrefix": {
+            "value": "[parameters('addressPrefix')]"
+          }
+        }
+      }
     }
   ]
 }
