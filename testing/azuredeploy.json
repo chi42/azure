@@ -128,7 +128,9 @@
           }
         ],
         "dhcpOptions": [
-          "dnsServers": ["10.3.0.4"]
+          {
+            "dnsServers": ["10.3.0.4"]
+          }
         ]
       }
     },
