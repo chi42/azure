@@ -222,7 +222,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('names').dnsVm, '/bootstrapServer')]",
+      "name": "['bootstrapScript']",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -249,7 +249,7 @@
       "type": "Microsoft.Resources/deployments",
       "name": "update-vnet",
       "dependsOn": [
-        "[concat(variables('names').dnsVm, '/bootstrapServer')]"
+        "Microsoft.Compute/virtualMachines/extensions/bootstrapScript"
       ],
       "properties": {
         "mode": "Incremental",
