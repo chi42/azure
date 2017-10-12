@@ -17,9 +17,9 @@
   },
   "resources": [
     {
-      "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
+      "apiVersion": "[parameters('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('names').virtualNetwork]",
+      "name": "[paramters('names').virtualNetwork]",
       "location": "[resourceGroup().location]",
       "properties": {
         "dhcpOptions": {
@@ -34,7 +34,7 @@
         },
         "subnets": [
           {
-            "name": "[variables('names').virtualNetworkSubnet]",
+            "name": "[parameters('names').virtualNetworkSubnet]",
             "properties": {
               "addressPrefix": "[parameters('addressPrefix')]"
             }
