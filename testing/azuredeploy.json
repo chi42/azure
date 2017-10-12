@@ -74,7 +74,7 @@
       "virtualNetworkSubnet": "default",
       "dnsVm": "[parameters('dnsNamePrefix')]",
       "dnsVmNic": "[concat(parameters('dnsNamePrefix'), '-nic')]",
-      "bootstrapScript": "[concat(variables('names').dnsVm, '/bootstrapScript')]"
+      "bootstrapScript": "[concat(parameters('dnsNamePrefix'), '/bootstrapScript')]"
     },
     "vNetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('names').virtualNetwork)]",
     "singleQuote": "'"
