@@ -24,7 +24,7 @@
       "properties": {
         "dhcpOptions": {
           "dnsServers": [
-            "[parameters('dnsIp')"
+            "[parameters('dnsIp')]"
           ]
         },
         "addressSpace": {
