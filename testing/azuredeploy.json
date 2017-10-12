@@ -104,12 +104,36 @@
       }
     },
     {
+      "name": "create-vnet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/create-vnet.json')]",
+          "contentVersion": "[variables('contentVersion')]"
+        },
+        "parameters": {
+          "resourceAPIVersions": {
+            "values": "[variables('resourceAPIVersions')]"
+          },
+          "names": {
+            "values": "[variables('names')]"
+          },
+          "addressPrefix": {
+            "values": "[parameters('addressPrefix')]"
+          }
+        }
+      }
+    },
+    {
       "apiVersion": "[variables('resourceAPIVersions').networkInterfaces]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('names').dnsVmNic]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]",
+        "['Microsoft.Resources/deployments/create-vnet']",
         "['Microsoft.Network/publicIPAddresses/publicip']"
       ],
       "properties": {
