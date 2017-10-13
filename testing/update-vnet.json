@@ -54,7 +54,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('names').dnsVm, '/initVmScripts')]",
-      "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
+      "apiVersion": "[parameters('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/' parameters('names').virtualNetwork)]"
