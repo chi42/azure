@@ -274,7 +274,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('names').dnsVm, '/initDnsServerScript')]",
+      "name": "[concat(variables('names').dnsVm, '/initVmScripts')]",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
