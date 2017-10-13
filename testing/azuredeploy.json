@@ -269,6 +269,9 @@
           "dnsIp": {
             "value": "[parameters('dnsVmIpAddress')]"
           },
+          "dnsNameSuffix": {
+            "value": "[parameters('dnsNameSuffix')]"
+          },
           "typeHandlerVersion": {
             "value": "[variables('typeHandlerVersion')]"
           },

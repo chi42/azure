@@ -19,6 +19,9 @@
     },
     "scriptsUri": {
       "type": "string"
+    },
+    "dnsNameSuffix": {
+      "type": "string"
     }
   },
   "variables" : {
