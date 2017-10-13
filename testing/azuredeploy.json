@@ -73,8 +73,7 @@
       "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
       "virtualNetworkSubnet": "default",
       "dnsVm": "[parameters('dnsNamePrefix')]",
-      "dnsVmNic": "[concat(parameters('dnsNamePrefix'), '-nic')]",
-      "bootstrapScript": "[concat(parameters('dnsNamePrefix'), '/bootstrapScript')]"
+      "dnsVmNic": "[concat(parameters('dnsNamePrefix'), '-nic')]"
     },
     "vNetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('names').virtualNetwork)]",
     "singleQuote": "'"
@@ -223,7 +222,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "dnsVmInitScript",
+      "name": "[concat(variables('names').dnsVm, 'initVmScript')]",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -249,7 +248,7 @@
       "type": "Microsoft.Resources/deployments",
       "name": "update-vnet",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('names').dnsVm, 'dnsVmInitScript')]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('names').dnsVm, 'initVmScript')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -275,7 +274,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "dnsVmServiceInitScript",
+      "name": "[concat(variables('names').dnsVm, 'initDnsServerScript')]",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
