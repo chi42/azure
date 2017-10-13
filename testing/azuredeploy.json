@@ -223,7 +223,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[variables('names').bootstrapScript]",
+      "name": "dnsVmInitScript",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -236,8 +236,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(variables('scriptsUri'), '/scripts/initialize-vm.sh')]",
-            "[concat(variables('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
+            "[concat(variables('scriptsUri'), '/scripts/initialize-vm.sh')]"
           ]
         },
         "protectedSettings":{
@@ -250,7 +249,7 @@
       "type": "Microsoft.Resources/deployments",
       "name": "update-vnet",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('names').dnsVm, 'bootstrapScript')]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('names').dnsVm, 'dnsVmInitScript')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -271,6 +270,29 @@
           "dnsIp": {
             "value": "[parameters('dnsVmIpAddress')]"
           }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "dnsVmServiceInitScript",
+      "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "['Microsoft.Resources/deployments/update-vnet']"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "[variables('typeHandlerVersion')]",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(variables('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
+          ]
+        },
+        "protectedSettings":{
+          "commandToExecute": "[concat('sh initialize-dns-server.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsVmIpAddress'), variables('singleQuote'))]"
         }
       }
     }

@@ -27,9 +27,10 @@
 #   info: https://blogs.msdn.microsoft.com/mast/2015/05/18/what-is-the-ip-address-168-63-129-16/.
 #
 
+LOG_FILE="/var/log/cloudera-azure-initialize.log"
+
 INTERNAL_FQDN_SUFFIX=$1
 HOST_IP=$2
-LOG_FILE=$3
 
 log() {
   echo "$(date): $*" >> "${LOG_FILE}"
@@ -40,9 +41,7 @@ log() {
 #
 nameserver_ip="168.63.129.16"
 
-log "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
-log "settings. If you have previously run this script on this host, or another host within the same "
-log "virtual network: stop running this script and run the reset script before continuing."
+log "This script will start and configure the BIND service on a VM."
 
 # make the directories that bind will use
 sudo mkdir /etc/named/zones
@@ -187,6 +186,8 @@ sudo chkconfig named on
 #
 # This host is now running BIND
 #
+
+log "BIND service setup completed"
 
 # dhclient-exit-hooks explained in dhclient-script man page: http://linux.die.net/man/8/dhclient-script
 # cat a here-doc represenation of the hooks to the appropriate file
