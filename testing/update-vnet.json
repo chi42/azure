@@ -57,7 +57,7 @@
       "apiVersion": "[parameters('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/' parameters('names').virtualNetwork)]"
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('names').virtualNetwork)]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
