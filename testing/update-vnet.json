@@ -73,7 +73,7 @@
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-dns-server.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsVmIpAddress'), variables('singleQuote'))]"
+          "commandToExecute": "[concat('sh initialize-dns-server.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsIp'), variables('singleQuote'))]"
         }
       }
     }
