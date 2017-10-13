@@ -13,7 +13,16 @@
     },
     "dnsIp": {
       "type": "string"
+    },
+    "typeHandlerVersion": {
+      "type": "string"
+    },
+    "scriptsUri": {
+      "type": "string"
     }
+  },
+  "variables" : {
+    "singleQuote": "'"
   },
   "resources": [
     {
@@ -40,6 +49,29 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('names').dnsVm, '/initVmScripts')]",
+      "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "['Microsoft.Resources/deployments/update-vnet']"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
+          ]
+        },
+        "protectedSettings":{
+          "commandToExecute": "[concat('sh initialize-dns-server.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsVmIpAddress'), variables('singleQuote'))]"
+        }
       }
     }
   ]
