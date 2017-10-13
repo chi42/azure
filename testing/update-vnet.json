@@ -53,11 +53,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('names').dnsVm, '/initVmScripts')]",
+      "name": "[concat(parameters('names').dnsVm, '/initVmScripts')]",
       "apiVersion": "[variables('resourceAPIVersions').virtualMachinesExtensions]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "['Microsoft.Resources/deployments/update-vnet']"
+        "[concat('Microsoft.Network/virtualNetworks/' parameters('names').virtualNetwork)]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
