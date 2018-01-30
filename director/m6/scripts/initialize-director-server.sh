@@ -169,15 +169,16 @@ log "Disabling iptables ... Successful"
 # Setup DNS server
 #
 
-log "Initializing DNS server ..."
-
-bash ./initialize-dns-server.sh "${INTERNAL_FQDN_SUFFIX}" "${HOST_IP}" "${LOG_FILE}"
-status=$?
-if [ ${status} -ne 0 ]; then
-  log "Initializing DNS server ... Failed" & exit status;
-fi
-
-log "Initializing DNS server ... Successful"
+log "Skip dns server initialization"
+#log "Initializing DNS server ..."
+#
+#bash ./initialize-dns-server.sh "${INTERNAL_FQDN_SUFFIX}" "${HOST_IP}" "${LOG_FILE}"
+#status=$?
+#if [ ${status} -ne 0 ]; then
+#  log "Initializing DNS server ... Failed" & exit status;
+#fi
+#
+#log "Initializing DNS server ... Successful"
 
 #
 # Setup MySQL server

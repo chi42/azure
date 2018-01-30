@@ -387,63 +387,10 @@
       }
     },
     {
-      "name": "update-vnet-dns",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('version').templateAPIVersion]",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/director-node"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('vnetUri')]",
-          "contentVersion": "[variables('version').contentVersion]"
-        },
-        "parameters": {
-          "version":{
-            "value":"[variables('version')]"
-          },
-          "networkSpec": {
-            "value": "[variables('networkSpec')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "network-restart-dns",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('version').templateAPIVersion]",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/update-vnet-dns"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('networkRestartUri')]",
-          "contentVersion": "[variables('version').contentVersion]"
-        },
-        "parameters": {
-          "version":{
-            "value":"[variables('version')]"
-          },
-          "vmName":{
-            "value": "[parameters('dnsNamePrefix')]"
-          },
-          "scriptsUri": {
-            "value": "[variables('scriptsUri')]"
-          },
-          "dnsServerIPAddress": {
-            "value": "[parameters('directorServerIPAddress')]"
-          }
-        }
-      }
-    },
-    {
       "name": "prepare-conf-launch-cluster",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('version').templateAPIVersion]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/network-restart-dns",
         "Microsoft.Resources/deployments/director-node"
       ],
       "properties": {
