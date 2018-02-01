@@ -47,7 +47,7 @@
     {
       "comments" : "example of reverse dns zone",
       "type": "Microsoft.Network/dnszones",
-      "name": "0.3.10.in-addr.arpa",
+      "name": "3.10.in-addr.arpa",
       "apiVersion": "2017-09-15-preview",
       "location": "global",
       "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', parameters('networkSpec').virtualNetworkName)]"],
