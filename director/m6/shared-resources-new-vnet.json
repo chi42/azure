@@ -53,7 +53,7 @@
       "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', parameters('networkSpec').virtualNetworkName)]"],
       "properties": {
         "zoneType": "Private",
-        "resolutionVirtualNetworks": [
+        "registrationVirtualNetworks": [
           {"id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSpec').virtualNetworkName)]"}
         ]
       }
