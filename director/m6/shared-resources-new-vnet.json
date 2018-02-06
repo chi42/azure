@@ -43,20 +43,6 @@
           {"id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSpec').virtualNetworkName)]"}
         ]
       }
-    },
-    {
-      "comments" : "example of reverse dns zone",
-      "type": "Microsoft.Network/dnszones",
-      "name": "3.10.in-addr.arpa",
-      "apiVersion": "2017-09-15-preview",
-      "location": "[resourceGroup().location]",
-      "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', parameters('networkSpec').virtualNetworkName)]"],
-      "properties": {
-        "zoneType": "Private",
-        "registrationVirtualNetworks": [
-          {"id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSpec').virtualNetworkName)]"}
-        ]
-      }
     }
   ]
 }
