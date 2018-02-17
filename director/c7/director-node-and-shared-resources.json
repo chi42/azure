@@ -196,11 +196,11 @@
           "imageReference": {
             "publisher": "cloudera",
             "offer": "cloudera-centos-os",
-            "sku": "7_2",
+            "sku": "7_4",
             "version": "latest"
           },
           "osDisk": {
-            "name": "osDisk",
+            "name": "osdisk",
             "vhd": {
               "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('storageAccountContainerName'), '/', variables('vmName'),'.vhd')]"
             },
