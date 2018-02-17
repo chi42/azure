@@ -200,7 +200,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "osdisk",
+            "name": "osDisk",
             "vhd": {
               "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('storageAccountContainerName'), '/', variables('vmName'),'.vhd')]"
             },
