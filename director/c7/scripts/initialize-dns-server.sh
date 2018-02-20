@@ -182,8 +182,8 @@ then
     exit 1
 fi
 
-sudo service named start
-sudo chkconfig named on
+sudo systemctl start named
+sudo systemctl enable named
 #
 # This host is now running BIND
 #
