@@ -50,7 +50,7 @@ log "Installing MariaDB server packages ..."
 n=0
 until [ ${n} -ge 5 ]
 do
-    sudo sudo yum install -y mariaDB-server >> "${LOG_FILE}" 2>&1 && break
+    sudo sudo yum install -y mariadb-server >> "${LOG_FILE}" 2>&1 && break
     n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
