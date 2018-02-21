@@ -215,10 +215,10 @@ EOF
 # this is a separate here-doc because there's two sets of variable substitution going on, this set
 # needs to be evaluated when written to the file, the two others (with "EOF" surrounded by quotes)
 # should not have variable substitution occur when creating the file.
-sudo cat > /etc/NetworkManager/dispatcher.d/12-register-dns <<"EOF"
+sudo cat >> /etc/NetworkManager/dispatcher.d/12-register-dns <<"EOF"
 domain=${INTERNAL_FQDN_SUFFIX}
 EOF
-sudo cat > /etc/NetworkManager/dispatcher.d/12-register-dns <<"EOF"
+sudo cat >> /etc/NetworkManager/dispatcher.d/12-register-dns <<"EOF"
 resolvconfupdate=$(mktemp -t resolvconfupdate.XXXXXXXXXX)
 echo updating resolv.conf
 grep -iv "search" /etc/resolv.conf > "$resolvconfupdate"
