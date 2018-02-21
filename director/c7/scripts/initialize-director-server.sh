@@ -162,6 +162,8 @@ log "Disabling iptables ..."
 
 sudo systemctl disable iptables
 sudo systemctl stop iptables
+sudo systemctl disable firewalld
+sudo systemctl stop firewalld
 
 log "Disabling iptables ... Successful"
 
