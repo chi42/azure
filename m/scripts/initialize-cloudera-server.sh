@@ -32,7 +32,7 @@ JOBFUNCTION=${15}
 COMPANY=${16}
 VMSIZE=${17}
 
-log "------- initialize-cloudera.sh starting -------"
+log "------- initialize-cloudera-server.sh starting -------"
 
 log "BEGIN: master node deployments"
 
@@ -88,7 +88,7 @@ if [ $OS = 'centos6' ]
 then
     rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera >> "${LOG_FILE}" 2>&1
     wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> "${LOG_FILE}" 2>&1
-elif [ $OS = 'centos6' ]
+elif [ $OS = 'centos7' ]
 then
     rpm --import http://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/RPM-GPG-KEY-cloudera >> "${LOG_FILE}" 2>&1
     wget http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> "${LOG_FILE}" 2>&1
