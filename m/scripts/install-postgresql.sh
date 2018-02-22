@@ -14,7 +14,7 @@ log() {
 
 stop_db()
 {
-  sudo service postgresql stop
+  sudo systemctl stop postgresql
 }
 
 fail_or_continue()
