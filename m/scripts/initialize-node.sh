@@ -60,6 +60,21 @@ log "DATANODES: $DATANODES"
 log "ADMINUSER: $ADMINUSER"
 log "NODETYPE: $NODETYPE"
 
+if grep "CentOS.* 6\\." /etc/redhat-release
+then
+    OS='centos6'
+    log "Initializing Centos 6 server"
+
+elif  grep "CentOS.* 7\\." /etc/redhat-release
+then
+    OS='centos7'
+    log "Initializing Centos 7 server"
+
+else
+    log "Unsupported Linux distribution."
+    exit 1
+fi
+
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
 NAMESUFFIX=$(echo "$NAMESUFFIX" | sed 's/^[^.]*\.//')
 
@@ -138,20 +153,43 @@ cat /etc/selinux/config > /tmp/beforeSelinux.out
 sed -i 's^SELINUX=enforcing^SELINUX=disabled^g' /etc/selinux/config || true
 cat /etc/selinux/config > /tmp/afterSeLinux.out
 
-# Disable iptables (centos7 uses firewalld)
-log "Disable iptables"
-firewall-cmd --runtime-to-permanent
-systemctl stop firewalld
-systemctl disable firewalld
-systemctl stop iptables
-systemctl disable iptables
+if [ $OS = 'centos6' ]
+then
+  log "Disable iptables"
+  /etc/init.d/iptables save
+  /etc/init.d/iptables stop
+  chkconfig iptables off
 
-# Install and start NTP
-log "Install and start NTP"
-yum install -y ntp
-systemctl start ntpd
-systemctl status ntpd
-systemctl enable ntpd
+  log "Install and start NTP"
+
+  yum install -y ntp
+  service ntpd start
+  service ntpd status
+  chkconfig ntpd on
+
+elif [ $OS = 'centos7' ]
+then
+  # centos7 uses firewalld instead of iptables
+  log "Disable iptables"
+  firewall-cmd --runtime-to-permanent
+  systemctl stop firewalld
+  systemctl disable firewalld
+  systemctl stop iptables
+  systemctl disable iptables
+
+  # use ntp instead of chrony, and tuned can overwrite sysctl.conf
+  log "Disable chrony and tuned"
+  systemctl stop chronyd
+  systemctl disable chronyd
+  systemctl stop tuned
+  systemctl disable tuned
+
+  log "Install and start NTP"
+  yum install -y ntp
+  systemctl start ntpd
+  systemctl status ntpd
+  systemctl enable ntpd
+fi
 
 # Disable THP
 log "Disable THP"
@@ -182,7 +220,15 @@ myhostname=$(hostname)
 fqdnstring=$(python -c "import socket; print socket.getfqdn('$myhostname')")
 log "Set host FQDN to ${fqdnstring}"
 sed -i "s/.*HOSTNAME.*/HOSTNAME=${fqdnstring}/g" /etc/sysconfig/network
-systemctl restart network
+
+if [ $OS = 'centos6' ]
+then
+  /etc/init.d/network restart
+
+elif [ $OS = 'centos7' ]
+then
+  systemctl restart network
+fi
 
 #disable password authentication in ssh
 #sed -i "s/UsePAM\s*yes/UsePAM no/" /etc/ssh/sshd_config
