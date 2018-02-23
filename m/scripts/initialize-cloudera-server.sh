@@ -107,9 +107,14 @@ log "start cloudera-scm-server services"
 if [ $OS = 'centos6' ]
 then
   service cloudera-scm-server start >> "${LOG_FILE}" 2>&1
+
+  # EPL needed for python-pip (later)
+  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm >> "${LOG_FILE}" 2>&1
 elif [ $OS = 'centos7' ]
 then
   systemctl start cloudera-scm-server >> "${LOG_FILE}" 2>&1
+
+  rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm >> "${LOG_FILE}" 2>&1
 fi
 
 #log "Create HIVE metastore DB Cloudera embedded PostgreSQL"
@@ -124,7 +129,6 @@ log "END: master node deployments"
 
 
 # Set up python
-#rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm >> "${LOG_FILE}" 2>&1
 yum -y install python-pip >> "${LOG_FILE}" 2>&1
 pip install cm_api >> "${LOG_FILE}" 2>&1
 

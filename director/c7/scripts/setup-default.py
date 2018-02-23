@@ -36,23 +36,24 @@ from cloudera.director.common.client import ApiClient
 from cloudera.director.latest import (AuthenticationApi, EnvironmentsApi,
     InstanceTemplatesApi, ProviderMetadataApi, DatabaseServersApi)
 
-def get_authenticated_client(args):
+def get_authenticated_client(server, admin_username, admin_password):
     """
     Create a new API client and authenticate against a server as admin
 
-    @param args: dict of parsed command line arguments that
-                 include server host and admin credentials
+    @param server:            director server url
+    @param admin_username:    user with administrative access 
+    @param admin_password:    password for admin user
 
     @rtype:      ApiClient
     @return:     authenticated API client
     """
 
     # Start by creating a client pointing to the right server
-    client = ApiClient(args.server)
+    client = ApiClient(server)
 
     # Authenticate. This will start a session and store the cookie
     auth = AuthenticationApi(client)
-    auth.login(Login(username=args.admin_username, password=args.admin_password))
+    auth.login(Login(username=admin_username, password=admin_password))
 
     return client
 
@@ -518,6 +519,26 @@ def load_config(config_file, fallback_config_files):
 
     return config
 
+def setup_environment(config, client)
+    """
+    Setup an environment and all associated things with 
+    """
+
+    providerType = config.get_string('provider.type')
+    cloudProviderMetadata = get_cloud_provider_metadata(client, providerType)
+
+    print "Creating a new environment ..."
+    environment_name = create_environment(client, config, providerType, cloudProviderMetadata)
+
+    print "Creating new instance templates ..."
+    create_instance_templates(client, config, environment_name, providerType, cloudProviderMetadata)
+
+    print "Adding existing external database servers ..."
+    add_existing_external_db_servers(client, config, environment_name)
+
+    return 0
+
+
 def main():
 
     parser = argparse.ArgumentParser(prog='setup-default.py')
@@ -555,20 +576,8 @@ def main():
 
     client = get_authenticated_client(args)
 
-    providerType = config.get_string('provider.type')
-    cloudProviderMetadata = get_cloud_provider_metadata(client, providerType)
 
-    print "Creating a new environment ..."
-    environment_name = create_environment(client, config, providerType, cloudProviderMetadata)
-
-    print "Creating new instance templates ..."
-    create_instance_templates(client, config, environment_name, providerType, cloudProviderMetadata)
-
-    print "Adding existing external database servers ..."
-    add_existing_external_db_servers(client, config, environment_name)
-
-    return 0
-
+  
 
 if __name__ == '__main__':
     try:
