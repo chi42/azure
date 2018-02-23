@@ -451,7 +451,7 @@ then
   sudo service postgresql start
 elif [ $OS = 'centos7' ]
 then
-  #?
+  postgresql-setup initdb
   sudo systemctl start postgresql
 fi
 
