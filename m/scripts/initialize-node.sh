@@ -22,6 +22,7 @@ MASTERNODES=$5
 DATANODES=$6
 ADMINUSER=$7
 NODETYPE=$8
+OS=
 
 # logs everything to the LOG_FILE
 log() {

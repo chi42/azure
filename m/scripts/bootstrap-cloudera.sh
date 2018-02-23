@@ -36,6 +36,7 @@ JOBFUNCTION=${17}
 COMPANY=${18}
 INSTALLCDH=${19}
 VMSIZE=${20}
+OS=
 
 CLUSTERNAME=$NAMEPREFIX
 
@@ -65,6 +66,22 @@ echo $((${1}%256))
 }
 
 log "------- bootstrap-cloudera.sh starting -------"
+
+if grep "CentOS.* 6\\." /etc/redhat-release
+then
+    OS='centos6'
+    log "Running on Centos 6 server"
+
+elif  grep "CentOS.* 7\\." /etc/redhat-release
+then
+  OS='centos7'
+  log "Running on Centos 7 server"
+
+else
+  log "Unsupported Linux distribution."
+  log "------- bootstrap-cloudera.sh failed -------"
+  exit 1
+fi
 
 log "my vmsize: $VMSIZE"
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
@@ -126,7 +143,7 @@ log "Worker ip to be supplied to next script: $worker_ip"
 log "BEGIN: Starting detached script to finalize initialization"
 if [ "$INSTALLCDH" == "True" ]
 then
-  if ! sh initialize-cloudera-server.sh "$CLUSTERNAME" "$key" "$mip" "$worker_ip" "$HA" "$ADMINUSER" "$PASSWORD" "$CMUSER" "$CMPASSWORD" "$EMAILADDRESS" "$BUSINESSPHONE" "$FIRSTNAME" "$LASTNAME" "$JOBROLE" "$JOBFUNCTION" "$COMPANY" "$VMSIZE">/dev/null 2>&1
+  if ! sh initialize-cloudera-server.sh "$CLUSTERNAME" "$key" "$mip" "$worker_ip" "$HA" "$ADMINUSER" "$PASSWORD" "$CMUSER" "$CMPASSWORD" "$EMAILADDRESS" "$BUSINESSPHONE" "$FIRSTNAME" "$LASTNAME" "$JOBROLE" "$JOBFUNCTION" "$COMPANY" "$VMSIZE" "$OS" >/dev/null 2>&1
   then
     log "initialize-cloudera-server.sh returned non-zero exit code"
     log "------- bootstrap-cloudera.sh failed -------"

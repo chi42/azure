@@ -31,6 +31,7 @@ JOBROLE=${14}
 JOBFUNCTION=${15}
 COMPANY=${16}
 VMSIZE=${17}
+OS=${18}
 
 log "------- initialize-cloudera-server.sh starting -------"
 
@@ -39,22 +40,6 @@ log "BEGIN: master node deployments"
 log "Beginning process of disabling SELinux"
 
 log "Running as $(whoami) on $(hostname)"
-
-if grep "CentOS.* 6\\." /etc/redhat-release
-then
-    OS='centos6'
-    log "Initializing Centos 6 server"
-
-elif  grep "CentOS.* 7\\." /etc/redhat-release
-then
-    OS='centos7'
-    log "Initializing Centos 7 server"
-
-else
-    log "Unsupported Linux distribution."
-    log "------- initialize-cloudera-server.sh failed -------"
-    exit 1
-fi
 
 # Use the Cloudera-documentation-suggested workaround
 log "about to set setenforce to 0"
@@ -111,15 +96,21 @@ fi
 #######################################################################################################################
 log "installing external DB"
 sudo yum install postgresql-server -y
-bash install-postgresql.sh >> "${LOG_FILE}" 2>&1
+bash install-postgresql.sh "$OS" >> "${LOG_FILE}" 2>&1
 
 log "finished installing external DB"
 #######################################################################################################################
 
 log "start cloudera-scm-server services"
 #service cloudera-scm-server-db start >> "${LOG_FILE}" 2>&1
-#service cloudera-scm-server start >> "${LOG_FILE}" 2>&1
-systemctl start cloudera-scm-server >> "${LOG_FILE}" 2>&1
+
+if [ $OS = 'centos6' ]
+then
+  service cloudera-scm-server start >> "${LOG_FILE}" 2>&1
+elif [ $OS = 'centos7' ]
+then
+  systemctl start cloudera-scm-server >> "${LOG_FILE}" 2>&1
+fi
 
 #log "Create HIVE metastore DB Cloudera embedded PostgreSQL"
 #export PGPASSWORD=$(head -1 /var/lib/cloudera-scm-server-db/data/generated_password.txt)
