@@ -36,23 +36,26 @@ from cloudera.director.common.client import ApiClient
 from cloudera.director.latest import (AuthenticationApi, EnvironmentsApi,
     InstanceTemplatesApi, ProviderMetadataApi, DatabaseServersApi)
 
-def get_authenticated_client(args):
+DEFAULT_SERVER_URL = 'http://localhost:7189'
+
+def get_authenticated_client(server, admin_username, admin_password):
     """
     Create a new API client and authenticate against a server as admin
 
-    @param args: dict of parsed command line arguments that
-                 include server host and admin credentials
+    @param server:            director server url
+    @param admin_username:    user with administrative access
+    @param admin_password:    password for admin user
 
     @rtype:      ApiClient
     @return:     authenticated API client
     """
 
     # Start by creating a client pointing to the right server
-    client = ApiClient(args.server)
+    client = ApiClient(server)
 
     # Authenticate. This will start a session and store the cookie
     auth = AuthenticationApi(client)
-    auth.login(Login(username=args.admin_username, password=args.admin_password))
+    auth.login(Login(username=admin_username, password=admin_password))
 
     return client
 
@@ -518,6 +521,31 @@ def load_config(config_file, fallback_config_files):
 
     return config
 
+def setup_environment(config, client)
+    """
+    Setup an environment and all supporting artifacts, based on the given config
+
+    @param config:      pyhocon ConfigTree object
+    @param client:      authenticated ApiClient
+
+    @rtype:             int
+    @return:            zero on success, else other
+    """
+
+    providerType = config.get_string('provider.type')
+    cloudProviderMetadata = get_cloud_provider_metadata(client, providerType)
+
+    print "Creating a new environment ..."
+    environment_name = create_environment(client, config, providerType, cloudProviderMetadata)
+
+    print "Creating new instance templates ..."
+    create_instance_templates(client, config, environment_name, providerType, cloudProviderMetadata)
+
+    print "Adding existing external database servers ..."
+    add_existing_external_db_servers(client, config, environment_name)
+
+    return 0
+
 def main():
 
     parser = argparse.ArgumentParser(prog='setup-default.py')
@@ -526,7 +554,7 @@ def main():
                         help='Name of a user with administrative access to Cloudera Director (defaults to %(default)s)')
     parser.add_argument('--admin-password', default='admin',
                         help='Password for the administrative user (defaults to %(default)s)')
-    parser.add_argument('--server', default='http://localhost:7189',
+    parser.add_argument('--server', default=DEFAULT_SERVER_URL,
                         help="Cloudera Director server URL (defaults to %(default)s)")
     parser.add_argument('--debug', default=False, action='store_true',
                         help="Whether to provide additional debugging output (defaults to %(default)s)")
@@ -553,21 +581,10 @@ def main():
                              join(script_path, 'reference.conf')
                          ])
 
-    client = get_authenticated_client(args)
+    client = get_authenticated_client(args.server, args.admin_username,
+                                      args.admin_password)
 
-    providerType = config.get_string('provider.type')
-    cloudProviderMetadata = get_cloud_provider_metadata(client, providerType)
-
-    print "Creating a new environment ..."
-    environment_name = create_environment(client, config, providerType, cloudProviderMetadata)
-
-    print "Creating new instance templates ..."
-    create_instance_templates(client, config, environment_name, providerType, cloudProviderMetadata)
-
-    print "Adding existing external database servers ..."
-    add_existing_external_db_servers(client, config, environment_name)
-
-    return 0
+    return setup_environment(config, client)
 
 
 if __name__ == '__main__':

@@ -28,6 +28,9 @@ import sys
 import os
 from optparse import OptionParser
 
+# maintain file naming schema (hyphens)
+setup_default = __import__('setup-default')
+
 # logging starts
 format = "%(asctime)s: %(message)s"
 datefmt ='%a %b %d %H:%M:%S %Z %Y'
@@ -196,9 +199,29 @@ def prepareAndImportConf(options):
 
     logging.info('Modifying config ... Successful')
 
+    try:
+        client = setup_default.get_authenticated_client(
+                  setup_default.DEFAULT_SERVER_URL,
+                  dirUsername,
+                  dirPassword)
+
+        setup_default.setup_environment(conf, client)
+    except Exception as e:
+        print "Failed to import config to Cloudera Director Server: %s" % e.read()
+        raise e
+
+    logging.info('Importing config to Cloudera Director server ... Successful')
+
     confLocation = DEFAULT_BASE_DIR + "/" + username + "/" + DEFAULT_CONF_NAME
 
     logging.info('Writing modified config to %s ...' % confLocation)
+
+    # don't store any secrets or passwords on disk
+    del conf['provider']['clientSecret']
+    del conf['databaseServers']['.mysqlprod1.password']
+
+    conf.put('provider.#clientSecret', 'REPLACE-ME')
+    conf.put('databaseServers.mysqlprod1.#password', 'REPLACE-ME')
 
     with open(confLocation, "w") as text_file:
         text_file.write(tool.HOCONConverter.to_hocon(conf))
@@ -207,11 +230,6 @@ def prepareAndImportConf(options):
 
     logging.info('Importing config to Cloudera Director server ...')
 
-    command = "python setup-default.py --admin-username '%s' --admin-password '%s' '%s'" % (
-        dirUsername, dirPassword, confLocation)
-    execAndLog(command)
-
-    logging.info('Importing config to Cloudera Director server ... Successful')
 
 
 def main():
