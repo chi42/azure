@@ -213,7 +213,7 @@ def prepareAndImportConf(options):
 
     # don't store any secrets or passwords on disk
     del conf['provider']['clientSecret']
-    del conf['databaseServers']['.mysqlprod1.password']
+    del conf['databaseServers']['mysqlprod1.password']
 
     conf.put('provider.#clientSecret', 'REPLACE-ME')
     conf.put('databaseServers.mysqlprod1.#password', 'REPLACE-ME')
@@ -239,4 +239,10 @@ def main():
 
 
 if __name__ == "__main__":
+  try:
     sys.exit(main())
+  except Exception as e:
+    logging.info("Exception while preparing director conf: %s" % e)
+    logging.info(''.join(traceback.format_stack()))
+    # re-raise to dump stuff to stderr
+    raise
