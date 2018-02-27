@@ -340,7 +340,7 @@ class EnvironmentSetup(object):
                                     merged_template_config,
                                     instance_provider_metadata.templateProperties))
 
-        sef.log_debug("name: %s, type: %s, image: %s, sshUsername: %s, normalizeInstance: %s, bootstrapScript: %s, tags: %s" % \
+        self.log_debug("name: %s, type: %s, image: %s, sshUsername: %s, normalizeInstance: %s, bootstrapScript: %s, tags: %s" % \
                 (template.name, template.type, template.image, template.sshUsername, template.normalizeInstance, template.bootstrapScript, template.tags))
         self.log_debug("template.config: %s" % template.config)
         self.log_debug("Unknown keys: %s" % (merged_template_config.viewkeys() - template.config.viewkeys()))
