@@ -199,16 +199,11 @@ def prepareAndImportConf(options):
 
     logging.info('Modifying config ... Successful')
 
-    try:
-        client = setup_default.get_authenticated_client(
-                  setup_default.DEFAULT_SERVER_URL,
-                  dirUsername,
-                  dirPassword)
-
-        setup_default.setup_environment(conf, client)
-    except Exception as e:
-        print "Failed to import config to Cloudera Director Server: %s" % e.read()
-        raise e
+    env = setup_default.EnvironmentSetup(setup_default.DEFAULT_SERVER_URL,
+                                         dirUsername,
+                                         dirPassword,
+                                         conf)
+    env.run_setup()
 
     logging.info('Importing config to Cloudera Director server ... Successful')
 
