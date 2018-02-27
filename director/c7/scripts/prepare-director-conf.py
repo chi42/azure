@@ -27,7 +27,6 @@ import logging
 import sys
 import os
 from optparse import OptionParser
-import traceback
 
 # maintain file naming schema (hyphens)
 setup_default = __import__('setup-default')
@@ -214,7 +213,7 @@ def prepareAndImportConf(options):
 
     # don't store any secrets or passwords on disk
     del conf['provider']['clientSecret']
-    del conf['databaseServers']['mysqlprod1.password']
+    del conf['databaseServers']['mysqlprod1']['password']
 
     conf.put('provider.#clientSecret', 'REPLACE-ME')
     conf.put('databaseServers.mysqlprod1.#password', 'REPLACE-ME')
@@ -243,7 +242,6 @@ if __name__ == "__main__":
   try:
     sys.exit(main())
   except Exception as e:
-    logging.info("Exception while preparing director conf: %s" % e)
-    logging.info(''.join(traceback.format_stack()))
+    logging.exception("Exception while preparing director conf: %s" % e)
     # re-raise to dump stuff to stderr
     raise
