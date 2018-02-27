@@ -27,6 +27,7 @@ import logging
 import sys
 import os
 from optparse import OptionParser
+import traceback
 
 # maintain file naming schema (hyphens)
 setup_default = __import__('setup-default')
