@@ -320,9 +320,9 @@
   },
   "resources": [
     {
-      "apiVersion": "2017-05-10",
       "name": "a41c461e-7135-4f6d-8a32-2579a821fcf5",
       "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "properties": {
         "mode": "Incremental",
         "template": {
