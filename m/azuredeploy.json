@@ -350,6 +350,19 @@
   },
   "resources": [
     {
+      "name": "98ec4446-a5f9-43fd-bc2d-e50919ef6e75",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('version').templateAPIVersion]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.1",
+          "resources": []
+        }
+      }
+    },
+    {
       "name": "shared-resources",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
