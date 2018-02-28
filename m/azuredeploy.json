@@ -352,7 +352,7 @@
     {
       "name": "98ec4446-a5f9-43fd-bc2d-e50919ef6e75",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('version').templateAPIVersion]",
+      "apiVersion": "[variables('templateAPIVersion')]",
       "properties": {
         "mode": "Incremental",
         "template": {
