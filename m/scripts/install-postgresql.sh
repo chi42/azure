@@ -6,7 +6,6 @@ LOG_FILE="/var/log/cloudera-azure-initialize.log"
 EXECNAME="install-postgresql.sh"
 CURRENT_VERSION_MARKER='Azure_1'
 SLEEP_INTERVAL=5
-OS=$1
 
 # logs everything to the $LOG_FILE
 log() {
@@ -15,13 +14,7 @@ log() {
 
 stop_db()
 {
-  if [ $OS = 'centos6' ]
-  then
-    sudo service postgresql stop
-  elif [ $OS = 'centos7' ]
-  then
-    sudo systemctl stop postgresql
-  fi
+  sudo systemctl stop postgresql
 }
 
 fail_or_continue()
@@ -445,15 +438,8 @@ wait_for_db_server_to_start()
 
 log "------- initialize-postgresql.sh starting -------"
 
-if [ $OS = 'centos6' ]
-then
-  sudo service postgresql initdb
-  sudo service postgresql start
-elif [ $OS = 'centos7' ]
-then
-  postgresql-setup initdb
-  sudo systemctl start postgresql
-fi
+postgresql-setup initdb
+sudo systemctl start postgresql
 
 SCM_PWD=$(create_random_password)
 DATA_DIR=/var/lib/pgsql/data
@@ -489,15 +475,8 @@ host    all         all         127.0.0.1/32          md5  \ ' $DATA_DIR/pg_hba.
 #echo "listen_addresses = '*'" >> $DATA_DIR/postgresql.conf
 
 #configure the postgresql server to start at boot
-if [ $OS = 'centos6' ]
-then
-  sudo /sbin/chkconfig postgresql on
-  sudo service postgresql restart
-elif [ $OS = 'centos7' ]
-then
-  sudo systemctl enable postgresql
-  sudo systemctl restart postgresql
-fi
+sudo systemctl enable postgresql
+sudo systemctl restart postgresql
 
 wait_for_db_server_to_start
 
@@ -518,13 +497,7 @@ create_hive_metastore
 configure_remote_connections
 
 # restart to make sure all configuration take effects
-if [ $OS = 'centos6' ]
-then
-  sudo service postgresql restart
-elif [ $OS = 'centos7' ]
-then
-  sudo systemctl restart postgresql
-fi
+sudo systemctl restart postgresql
 
 wait_for_db_server_to_start
 

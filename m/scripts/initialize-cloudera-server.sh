@@ -31,7 +31,6 @@ JOBROLE=${14}
 JOBFUNCTION=${15}
 COMPANY=${16}
 VMSIZE=${17}
-OS=${18}
 
 log "------- initialize-cloudera-server.sh starting -------"
 
@@ -69,15 +68,9 @@ set +e
 
 log "Set cloudera-manager.repo to CM v5"
 yum clean all >> "${LOG_FILE}" 2>&1
-if [ $OS = 'centos6' ]
-then
-    rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera >> "${LOG_FILE}" 2>&1
-    wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> "${LOG_FILE}" 2>&1
-elif [ $OS = 'centos7' ]
-then
-    rpm --import http://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/RPM-GPG-KEY-cloudera >> "${LOG_FILE}" 2>&1
-    wget http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> "${LOG_FILE}" 2>&1
-fi
+rpm --import http://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/RPM-GPG-KEY-cloudera >> "${LOG_FILE}" 2>&1
+wget http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> "${LOG_FILE}" 2>&1
+
 # this often fails so adding retry logic
 n=0
 until [ $n -ge 5 ]
@@ -96,7 +89,7 @@ fi
 #######################################################################################################################
 log "installing external DB"
 sudo yum install postgresql-server -y
-bash install-postgresql.sh "$OS" >> "${LOG_FILE}" 2>&1
+bash install-postgresql.sh >> "${LOG_FILE}" 2>&1
 
 log "finished installing external DB"
 #######################################################################################################################
@@ -104,18 +97,9 @@ log "finished installing external DB"
 log "start cloudera-scm-server services"
 #service cloudera-scm-server-db start >> "${LOG_FILE}" 2>&1
 
-if [ $OS = 'centos6' ]
-then
-  service cloudera-scm-server start >> "${LOG_FILE}" 2>&1
+systemctl start cloudera-scm-server >> "${LOG_FILE}" 2>&1
 
-  # EPL needed for python-pip (later)
-  rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm >> "${LOG_FILE}" 2>&1
-elif [ $OS = 'centos7' ]
-then
-  systemctl start cloudera-scm-server >> "${LOG_FILE}" 2>&1
-
-  rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm >> "${LOG_FILE}" 2>&1
-fi
+rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm >> "${LOG_FILE}" 2>&1
 
 #log "Create HIVE metastore DB Cloudera embedded PostgreSQL"
 #export PGPASSWORD=$(head -1 /var/lib/cloudera-scm-server-db/data/generated_password.txt)
