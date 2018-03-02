@@ -215,8 +215,8 @@ def prepareAndImportConf(options):
     del conf['provider']['clientSecret']
     del conf['databaseServers']['mysqlprod1']['password']
 
-    conf.put('provider.#clientSecret', 'REPLACE-ME')
-    conf.put('databaseServers.mysqlprod1.#password', 'REPLACE-ME')
+    conf.put('provider.#clientSecret', 'clientSecret_REPLACE-ME')
+    conf.put('databaseServers.mysqlprod1.#password', 'password_databaseServers_REPLACE-ME')
 
     with open(confLocation, "w") as text_file:
         text_file.write(tool.HOCONConverter.to_hocon(conf))

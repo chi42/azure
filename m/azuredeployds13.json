@@ -146,7 +146,7 @@
       "metadata": {
         "description": "The OS VM Image (defaults to ClouderaCentOS7_4)"
       },
-      "allowedValues": ["ClouderaCentOS6_7", "ClouderaCentOS6_8", "ClouderaCentOS7_4"]
+      "allowedValues": [""ClouderaCentOS7_4"]
     },
     "company": {
       "type": "string",
@@ -273,32 +273,6 @@
     },
     "clusterSpec": "[variables(concat('clusterTshirtSize', parameters('tshirtSize')))]",
     "vmImageInfo": {
-      "ClouderaCentOS6_7": {
-        "plan": {
-          "name": "cloudera-centos-6",
-          "publisher": "cloudera",
-          "product": "cloudera-centos-6"
-        },
-        "imageReference": {
-          "publisher": "cloudera",
-          "offer": "cloudera-centos-6",
-          "sku": "cloudera-centos-6",
-          "version": "latest"
-          }
-      },
-      "ClouderaCentOS6_8": {
-        "plan": {
-          "name": "6_8",
-          "publisher": "cloudera",
-          "product": "cloudera-centos-os"
-        },
-        "imageReference": {
-          "publisher": "cloudera",
-          "offer": "cloudera-centos-os",
-          "sku": "6_8",
-          "version": "latest"
-        }
-      },
       "ClouderaCentOS7_4": {
         "plan": {
           "name": "7_4",

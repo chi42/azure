@@ -59,6 +59,14 @@ class EnvironmentSetup(object):
         logging.info(msg)
 
 
+    def log_error(self, msg):
+        logging.error(msg)
+
+
+    def log_warn(self, msg):
+        logging.warning(msg)
+
+
     def get_authenticated_client(self):
         """
         Create a new API client and authenticate against a server as admin
@@ -116,7 +124,7 @@ class EnvironmentSetup(object):
 
         except HTTPError as e:
             if e.code == 302:
-                self.log_info("Warning: an environment with the same name already exists")
+                self.log_warn("an environment with the same name already exists")
             else:
                 raise
 
@@ -196,52 +204,6 @@ class EnvironmentSetup(object):
         return provider
 
 
-    def merge_configs(self, configs):
-        """
-        Creates a single configuration merging the specified configurations.
-    
-        @param configs: configurations, from least-specific to most-specific
-    
-        @rtype:         dict
-        @return:        merged configurations
-        """
-    
-        merged_config = {}
-        for config in configs:
-            merged_config.update(config)
-    
-        return merged_config
-    
-    
-    def get_configuration_property_values(self, mconfig, configuration_properties):
-        """
-        Retrieve pluggable provider metadata
-    
-        @param mconfig:                  configuration (generally a merged config)
-        @param configuration_properties: configuration properties to retrieve
-    
-        @rtype:                          dict
-        @return:                         configuration property values for the specified properties
-        """
-    
-        values_by_config_key = {}
-        for configuration_property in configuration_properties:
-            config_key = configuration_property.configKey
-            if configuration_property.required:
-                if config_key not in mconfig:
-                    raise KeyError("Required property: '%s' is absent" % config_key)
-                config_value = str(mconfig.get(config_key))
-            else:
-                default_value = configuration_property.defaultValue
-                if default_value is None:
-                    default_value = ''
-                config_value = str(mconfig.get(config_key, default_value))
-            self.set_configuration_property_value(values_by_config_key, config_key, config_value,
-                                                  configuration_property.type)
-    
-        return values_by_config_key
-
-
     def create_instance_templates(self, environment_name, provider_type, cloud_provider_metadata):
         """
         Create an instance template with data from the configuration
@@ -265,7 +227,7 @@ class EnvironmentSetup(object):
                 instance_provider_metadata = resource_provider_metadata
                 break
         if instance_provider_metadata is None:
-            self.log_info("Warning: there is no compute instance provider for provider type: %s" %\
+            self.log_warn("there is no compute instance provider for provider type: %s" %\
                             provider_type)
         else:
             template_configs_by_template_name = self.config.get_config('instances')
@@ -304,21 +266,25 @@ class EnvironmentSetup(object):
         config_value = merged_template_config.get('type', '')
         if config_value:
             template.type = config_value
+
         # read and set template image from config
         template.image = ''
         config_value = merged_template_config.get('image', '')
         if config_value:
             template.image = config_value
+
         # read and set optional template ssh username from config
         template.sshUsername = ''
         config_value = merged_template_config.get('sshUsername', '')
         if config_value:
             template.sshUsername = config_value
+
         # read and set optional template normalize instance flag from config
         template.normalizeInstance = ''
         config_value = merged_template_config.get('normalizeInstance', '')
         if config_value:
             template.normalizeInstance = bool(config_value)
+
         # read and set optional template bootstrap script from config
         template.bootstrapScript = ''
         config_value = merged_template_config.get('bootstrapScript', '')
@@ -330,10 +296,12 @@ class EnvironmentSetup(object):
             if config_value:
                 with open(config_value) as f:
                     template.bootstrapScript = f.read()
+
         # read and set optional template tags from config
         template.tags = {}
         if 'tags' in merged_template_config:
             template.tags.update(merged_template_config.get('tags'))
+
         # read and set additional template configuration properties from config
         template.config = {}
         template.config.update(self.get_configuration_property_values(
@@ -365,7 +333,7 @@ class EnvironmentSetup(object):
 
         except HTTPError as e:
             if e.code == 302:
-                self.log_info("Warning: an instance template with the same name already exists")
+                self.log_warn("an instance template with the same name already exists")
             else:
                 raise e
 
@@ -443,7 +411,7 @@ class EnvironmentSetup(object):
         # read and set db type from config
         config_value = db_server_config.get('type', '')
         if config_value:
-            # XXX DB type is case sensitive and must be ALL CAPS
+            # Note: DB type is case sensitive and must be ALL CAPS
             db_server_template.type = config_value.upper()
 
         self.log_debug("name: %s, hostname: %s, port: %s, username: %s, type: %s" % \
@@ -467,7 +435,7 @@ class EnvironmentSetup(object):
 
         except HTTPError as e:
             if e.code == 302:
-                self.log_info("Warning: an database server with the same name already exists")
+                self.log_warn("an database server with the same name already exists")
             else:
                 raise e
 
@@ -490,10 +458,56 @@ class EnvironmentSetup(object):
 
         except HTTPError as e:
             if e.code == 404:
-                self.log_info("Error: no such provider type: %s" % provider_type)
+                self.log_error("no such provider type: %s" % provider_type)
             raise e
 
         return cloud_provider_metadata
+
+
+    def merge_configs(self, configs):
+        """
+        Creates a single configuration merging the specified configurations.
+
+        @param configs: configurations, from least-specific to most-specific
+
+        @rtype:         dict
+        @return:        merged configurations
+        """
+
+        merged_config = {}
+        for config in configs:
+            merged_config.update(config)
+
+        return merged_config
+
+
+    def get_configuration_property_values(self, mconfig, configuration_properties):
+        """
+        Retrieve pluggable provider metadata
+
+        @param mconfig:                  configuration (generally a merged config)
+        @param configuration_properties: configuration properties to retrieve
+
+        @rtype:                          dict
+        @return:                         configuration property values for the specified properties
+        """
+
+        values_by_config_key = {}
+        for configuration_property in configuration_properties:
+            config_key = configuration_property.configKey
+            if configuration_property.required:
+                if config_key not in mconfig:
+                    raise KeyError("Required property: '%s' is absent" % config_key)
+                config_value = str(mconfig.get(config_key))
+            else:
+                default_value = configuration_property.defaultValue
+                if default_value is None:
+                    default_value = ''
+                config_value = str(mconfig.get(config_key, default_value))
+            self.set_configuration_property_value(values_by_config_key, config_key, config_value,
+                                                  configuration_property.type)
+
+        return values_by_config_key
 
 
     def set_configuration_property_value(self, values_by_config_key, config_key,
@@ -539,7 +553,7 @@ class EnvironmentSetup(object):
             self.log_info("Adding existing external database servers ...")
             self.add_existing_external_db_servers(environment_name)
         except HTTPError as e:
-            self.log_info(e.read())
+            self.log_error(e.read())
             raise
 
 
