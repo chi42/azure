@@ -35,7 +35,7 @@
       "type": "Microsoft.Network/dnszones",
       "name": "nwongdomain.local",
       "apiVersion": "2017-09-15-preview",
-      "location": "[resourceGroup().location]",
+      "location": "global",
       "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', parameters('networkSpec').virtualNetworkName)]"],
       "properties": {
         "zoneType": "Private",
