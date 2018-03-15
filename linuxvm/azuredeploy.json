@@ -40,7 +40,7 @@
     "imageOffer": "UbuntuServer",
     "nicName": "myVMNic",
     "addressPrefix": "10.3.0.0/16",
-    "subnetName": "Subnet",
+    "subnetName": "clouderasubnet",
     "subnetPrefix": "10.3.0.0/24",
     "storageAccountType": "Standard_LRS",
     "publicIPAddressName": "myPublicIP",
