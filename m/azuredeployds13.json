@@ -93,7 +93,7 @@
         "description": "Subnet name for the virtual network where resources will be provisioned"
       }
     },
-    "addressPrefix": {
+    "addressPrefixes": {
       "type": "string",
       "defaultValue": "10.3.0.0/16",
       "metadata": {
@@ -249,7 +249,7 @@
       "virtualNetworks": "2017-06-01"
     },
     "installCDH":"True",
-    "addressPrefix":"[parameters('addressPrefix')]",
+    "addressPrefixes":"[parameters('addressPrefixes')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
     "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
@@ -312,7 +312,7 @@
       "dataNodeASName": "[concat(parameters('dnsNamePrefix'), '-dnAS')]"
     },
     "networkSpec": {
-      "addressPrefix": "[variables('addressPrefix')]",
+      "addressPrefixes": "[variables('addressPrefixes')]",
       "subnetPrefix": "[variables('subnetPrefix')]",
       "ipOctet01": "[variables('ipOctet01')]",
       "ipOctet2": "[variables('ipOctet2')]",

@@ -93,7 +93,7 @@
         "description": "Subnet name for the virtual network where resources will be provisioned"
       }
     },
-    "addressPrefix": {
+    "addressPrefixes": {
       "type": "string",
       "defaultValue": "10.3.0.0/16",
       "metadata": {
@@ -249,7 +249,8 @@
       "virtualNetworks": "2017-06-01"
     },
     "installCDH":"True",
-    "addressPrefix":"[parameters('addressPrefix')]",
+    "location": "[parameters('location')]",
+    "addressPrefixes":"[parameters('addressPrefixes')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
     "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/m",
@@ -312,7 +313,7 @@
       "dataNodeASName": "[concat(parameters('dnsNamePrefix'), '-dnAS')]"
     },
     "networkSpec": {
-      "addressPrefix": "[variables('addressPrefix')]",
+      "addressPrefixes": "[variables('addressPrefixes')]",
       "subnetPrefix": "[variables('subnetPrefix')]",
       "ipOctet01": "[variables('ipOctet01')]",
       "ipOctet2": "[variables('ipOctet2')]",
@@ -331,7 +332,7 @@
   },
   "resources": [
     {
-      "name": "98ec4446-a5f9-43fd-bc2d-e50919ef6e75",
+      "name": "pid-98ec4446-a5f9-43fd-bc2d-e50919ef6e75",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
       "properties": {
@@ -390,7 +391,7 @@
             "value":"[variables('resourceAPIVersions')]"
           },
           "location":{
-            "value":"[parameters('location')]"
+            "value":"[variables('location')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -482,7 +483,7 @@
             "value":"[variables('resourceAPIVersions')]"
           },
           "location":{
-            "value":"[parameters('location')]"
+            "value":"[variables('location')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
