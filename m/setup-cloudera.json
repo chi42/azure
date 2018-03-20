@@ -5,6 +5,9 @@
     "resourceAPIVersions":{
       "type":"object"
     },
+    "location": {
+      "type": "string"
+    },
     "dnsNamePrefix": {
       "type": "string"
     },
@@ -64,7 +67,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('dnsNamePrefix'), '-mn0', '/prepareDisks')]",
       "apiVersion": "[parameters('resourceAPIVersions').virtualMachinesExtensions]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
         "type": "CustomScript",
