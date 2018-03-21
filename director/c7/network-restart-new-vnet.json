@@ -11,10 +11,10 @@
     "scriptsUri":{
       "type":"string"
     },
-    "clusterParameters":{
-      "type":"secureObject"
-    },
     "dnsServerIPAddress":{
+      "type":"string"
+    },
+    "location":{
       "type":"string"
     }
   },
@@ -23,7 +23,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('vmName'), '/bootstrapServer')]",
       "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "location": "[parameters('clusterParameters').location]",
+      "location": "[parameters('location')]",
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
         "type": "CustomScript",
