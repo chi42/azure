@@ -271,7 +271,6 @@
     },
     "clusterParameters":{
       "envName":"[parameters('directorEnvironmentName')]",
-      "location":"[parameters('location')]",
       "subId":"[parameters('subscriptionId')]",
       "tenantId":"[parameters('tenantId')]",
       "clientId":"[parameters('clientId')]",
@@ -355,6 +354,9 @@
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
@@ -402,6 +404,9 @@
           },
           "clusterParameters": {
             "value": "[variables('clusterParameters')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
@@ -425,6 +430,9 @@
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
+          },
+          "location": {
+            "value": "parameters('location')"
           }
         }
       }
@@ -487,6 +495,9 @@
           },
           "clusterParameters":{
             "value": "[variables('clusterParameters')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
