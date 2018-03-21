@@ -29,8 +29,8 @@
     "userInfo": {
       "type": "object"
     },
-    "clusterParameters": {
-      "type": "object"
+    "location": {
+      "type": "string"
     }
   },
   "variables": {
@@ -43,36 +43,35 @@
     "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]",
     "masterAsName":"asmaster",
     "workerAsName":"asworker",
-    "edgeAsName":"asedge",
-    "location": "[parameters('clusterParameters').location]"
+    "edgeAsName":"asedge"
   },
   "resources": [
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('masterAsName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": { }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('workerAsName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": { }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('edgeAsName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": { }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(parameters('networkSpec').virtualNetworkName,'-nsg')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -96,7 +95,7 @@
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('dirSecurityGroupName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -120,7 +119,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
       "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "accountType": "[parameters('storageAccount').type]"
       }
@@ -129,7 +128,7 @@
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
@@ -141,7 +140,7 @@
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('nicName'))]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('dirSecurityGroupName'))]"
@@ -176,7 +175,7 @@
         "publisher": "cloudera",
         "product": "cloudera-centos-os"
       },
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
@@ -234,7 +233,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), '/bootstrapServer')]",
       "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "location": "[variables('location')]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],

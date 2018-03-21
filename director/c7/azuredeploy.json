@@ -452,6 +452,9 @@
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "dnsServerIPAddress": {
             "value": "[parameters('directorServerIPAddress')]"
           }
