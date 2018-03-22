@@ -327,14 +327,17 @@ class EnvironmentSetup(object):
         @return:                 names of the created instance template
         """
 
+        self.log_info("deadbeef instancetemplatesapi")
         api = InstanceTemplatesApi(self.client)
         try:
+            self.log_info("deadbeef api create")
             api.create(environment_name, template)
 
         except HTTPError as e:
             if e.code == 302:
                 self.log_warn("an instance template with the same name already exists")
             else:
+                self.log_info("deadbeef reraise e")
                 raise e
 
         return template.name
