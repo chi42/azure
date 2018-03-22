@@ -136,7 +136,7 @@ class EnvironmentSetup(object):
             elif e.code == 400:
                 err_string = "Environment create failed: %s" % e
                 self.log_error(err_string)
-                raise PotentialCredentialException()
+                raise PotentialCredentialException(err_string)
             else:
                 raise
 
@@ -349,7 +349,7 @@ class EnvironmentSetup(object):
             elif e.code == 400:
                 err_string = "Instance template create failed: %s" % e
                 self.log_error(err_string)
-                raise PotentialCredentialException()
+                raise PotentialCredentialException(err_string)
             else:
                 raise
 

@@ -32,10 +32,10 @@ from optparse import OptionParser
 setup_default = __import__('setup-default')
 
 # logging starts
-format = "%(asctime)s: %(message)s"
+format = "%(asctime)s %(levelname)s: %(message)s"
 datefmt ='%a %b %d %H:%M:%S %Z %Y'
 logFileName = '/var/log/cloudera-azure-initialize.log'
-logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.INFO)
+logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.DEBUG)
 
 DEFAULT_BASE_DIR = "/home"
 DEFAULT_BASE_CONF_NAME = "azure.simple.conf"
