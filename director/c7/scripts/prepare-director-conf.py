@@ -197,17 +197,26 @@ def prepareAndImportConf(options):
     conf.put('databaseServers.mysqlprod1.user', dbUsername)
     conf.put('databaseServers.mysqlprod1.password', dbPassword)
 
+    confLocation = DEFAULT_BASE_DIR + "/" + username + "/" + DEFAULT_CONF_NAME
+
     logging.info('Modifying config ... Successful')
 
     env = setup_default.EnvironmentSetup(setup_default.DEFAULT_SERVER_URL,
                                          dirUsername,
                                          dirPassword,
                                          conf)
-    env.run_setup()
+
+    logging.info('Importing config to Cloudera Director server ...')
+
+    try:
+        env.run_setup()
+    except setup_default.PotentialCredentialException:
+        logging.info("Azure environment creation has been skipped due to incorrect or "
+                     "insufficient credentials. Update your credentials in %s and "
+                     "resubmit the configuration to director using 'cloudera-director "
+                     "bootstrap-remote ...'" % confLocation)
 
     logging.info('Importing config to Cloudera Director server ... Successful')
-
-    confLocation = DEFAULT_BASE_DIR + "/" + username + "/" + DEFAULT_CONF_NAME
 
     logging.info('Writing modified config to %s ...' % confLocation)
 
@@ -222,9 +231,6 @@ def prepareAndImportConf(options):
         text_file.write(tool.HOCONConverter.to_hocon(conf))
 
     logging.info('Writing modified config to %s ... Successful' % confLocation)
-
-    logging.info('Importing config to Cloudera Director server ...')
-
 
 
 def main():

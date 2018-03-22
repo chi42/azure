@@ -39,6 +39,18 @@ from cloudera.director.latest import (AuthenticationApi, EnvironmentsApi,
 
 DEFAULT_SERVER_URL = 'http://localhost:7189'
 
+class PotentialCredentialException(Exception):
+  """
+  Exceptions that most likely arose due to azure credentials that are either
+  incorrect or have insufficient permissions to create the resources we need.
+  """
+
+  def __init__(self, reason):
+    self.reason = reason
+
+  def __str__(self):
+    return self.reason
+
 class EnvironmentSetup(object):
     def __init__(self, server, admin_username, admin_password, config, debug=False):
         self.server = server
@@ -125,7 +137,13 @@ class EnvironmentSetup(object):
         except HTTPError as e:
             if e.code == 302:
                 self.log_warn("an environment with the same name already exists")
+            elif e.code = 400:
+                err_string = "Environment creation failed, most likely due to incorrect "
+                             "Azure user credentials, with error: %s" % e
+                self.log_error(err_string)
+                raise PotentialCredentialException(err_string)
             else:
+                # a totally unexpected error, so let this bubble up
                 raise
 
         self.log_info("Environments: %s" % api.list())
@@ -334,8 +352,13 @@ class EnvironmentSetup(object):
         except HTTPError as e:
             if e.code == 302:
                 self.log_warn("an instance template with the same name already exists")
+            elif e.code = 400:
+                err_string = "Instance template creation failed, most likely due to insufficient "
+                             "Azure pivilleges, with error : %s" % e
+                self.log_error(err_string)
+                raise PotentialCredentialException(err_string)
             else:
-                raise e
+                raise
 
         return template.name
 
@@ -538,23 +561,19 @@ class EnvironmentSetup(object):
         @return:            zero on success, else other
         """
 
-        try: 
-            self.get_authenticated_client()
+        self.get_authenticated_client()
 
-            providerType = self.config.get_string('provider.type')
-            cloudProviderMetadata = self.get_cloud_provider_metadata(providerType)
+        providerType = self.config.get_string('provider.type')
+        cloudProviderMetadata = self.get_cloud_provider_metadata(providerType)
 
-            self.log_info("Creating a new environment ...")
-            environment_name = self.create_environment(providerType, cloudProviderMetadata)
+        self.log_info("Creating a new environment ...")
+        environment_name = self.create_environment(providerType, cloudProviderMetadata)
 
-            self.log_info("Creating new instance templates ...")
-            self.create_instance_templates(environment_name, providerType, cloudProviderMetadata)
+        self.log_info("Creating new instance templates ...")
+        self.create_instance_templates(environment_name, providerType, cloudProviderMetadata)
 
-            self.log_info("Adding existing external database servers ...")
-            self.add_existing_external_db_servers(environment_name)
-        except HTTPError as e:
-            self.log_error(e.read())
-            raise
+        self.log_info("Adding existing external database servers ...")
+        self.add_existing_external_db_servers(environment_name)
 
 
 def load_config(config_file, fallback_config_files):
