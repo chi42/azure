@@ -9,7 +9,7 @@
       "type": "object"
     },
     "location": {
-      "type": "location"
+      "type": "string"
     }
   },
   "variables": {},
