@@ -211,12 +211,11 @@ def prepareAndImportConf(options):
     try:
         env.run_setup()
     except setup_default.PotentialCredentialException:
-        logging.info("Azure environment creation has been skipped due to incorrect or "
-                     "insufficient credentials. Update your credentials in %s and "
-                     "resubmit the configuration to director using 'cloudera-director "
-                     "bootstrap-remote ...'" % confLocation)
-
-    logging.info('Importing config to Cloudera Director server ... Successful')
+        logging.info("Azure environment creation has been skipped. Fix any problems in"
+                     "%s and resubmit the configuration to director using "
+                     "'cloudera-director bootstrap-remote ...'" % confLocation)
+    else:
+        logging.info('Importing config to Cloudera Director server ... Successful')
 
     logging.info('Writing modified config to %s ...' % confLocation)
 
