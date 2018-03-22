@@ -432,7 +432,7 @@
             "value": "[variables('networkSpec')]"
           },
           "location": {
-            "value": "parameters('location')"
+            "value": "[parameters('location')]"
           }
         }
       }
