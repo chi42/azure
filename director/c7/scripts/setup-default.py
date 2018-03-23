@@ -74,8 +74,13 @@ class EnvironmentSetup(object):
     def log_warn(self, msg):
         logging.warning(msg)
 
-    def check_auth_error(http_exception):
-        body = http_exception.read()
+    def check_auth_error(self, http_except):
+        """
+        @param http_excep:    a HTTPException object
+
+        @return               string describing error if auth error, else None
+        """
+        body = http_except.read()
         if 'AuthorizationFailed' in body:
             return 'Client has insufficient Azure permissions'
         elif 'AuthenticationException' in body:
@@ -144,6 +149,7 @@ class EnvironmentSetup(object):
             if auth_err:
                 # e.read() gives body with details, e.__str__() gives http error number
                 self.log_error("Director returned %s: %s" % (e, e.read()))
+                self.log_error("DEADBEEF READ TWICE %s: %s" % (e, e.read()))
                 raise AuthException(auth_err)
             elif e.code == 302:
                 self.log_warn("an environment with the same name already exists")
