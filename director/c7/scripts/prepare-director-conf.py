@@ -116,6 +116,8 @@ def generateKeyToFile(keyFileName, username):
 
 
 def prepareAndImportConf(options):
+    errors = 0
+
     logging.info('Parsing base config ...')
 
     conf = ConfigFactory.parse_file(DEFAULT_BASE_CONF_NAME)
@@ -211,6 +213,7 @@ def prepareAndImportConf(options):
     try:
         env.run_setup()
     except setup_default.AuthException as e:
+        errors += 1
         logging.error("%s: Azure environment creation has been skipped. Validate your "
                      "credentials in %s and resubmit the configuration to director "
                      "using 'cloudera-director bootstrap-remote ...'" %\
@@ -232,13 +235,20 @@ def prepareAndImportConf(options):
 
     logging.info('Writing modified config to %s ... Successful' % confLocation)
 
+    return errors
+
 
 def main():
     # Parse user options
     logging.info('Prepare and import Azure environment on Cloudera Director server ...')
     options = parse_options()
-    prepareAndImportConf(options)
-    logging.info('Prepare and import Azure environment on Cloudera Director server ... Successful')
+    errors = prepareAndImportConf(options)
+
+    status = 'Successful'
+    if errors > 0:
+      status = 'Completed with errors'
+
+    logging.info("Prepare and import Azure environment on Cloudera Director server ... %s" % status)
     # This line marks the end of all VM extension script run.
     logging.info('---------- VM extension scripts completed ----------')
     return 0

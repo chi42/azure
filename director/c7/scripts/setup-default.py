@@ -151,7 +151,7 @@ class EnvironmentSetup(object):
 
             if auth_err_msg:
                 self.log_error("Director returned %s: %s" % (e, err_body))
-                raise AuthException(auth_err)
+                raise AuthException(auth_err_msg)
             elif e.code == 302:
                 self.log_warn("an environment with the same name already exists")
             else:
