@@ -249,7 +249,6 @@
       "virtualNetworks": "2017-06-01"
     },
     "installCDH":"True",
-    "location": "[parameters('location')]",
     "addressPrefixes":"[parameters('addressPrefixes')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
@@ -391,7 +390,7 @@
             "value":"[variables('resourceAPIVersions')]"
           },
           "location":{
-            "value":"[variables('location')]"
+            "value":"[parameters('location')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -483,7 +482,7 @@
             "value":"[variables('resourceAPIVersions')]"
           },
           "location":{
-            "value":"[variables('location')]"
+            "value":"[parameters('location')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
