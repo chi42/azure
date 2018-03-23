@@ -556,7 +556,7 @@ class EnvironmentSetup(object):
             self.log_info("Adding existing external database servers ...")
             self.add_existing_external_db_servers(environment_name)
         except HTTPError as e:
-            self.log_error("deadbeef batman things: %s" % e.read())
+            self.log_error(e.read())
             raise
 
 
