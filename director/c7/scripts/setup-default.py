@@ -39,10 +39,10 @@ from cloudera.director.latest import (AuthenticationApi, EnvironmentsApi,
 
 DEFAULT_SERVER_URL = 'http://localhost:7189'
 
-class PotentialCredentialException(Exception):
+class AuthException(Exception):
   """
-  Exceptions that most likely arose due to azure credentials that are either
-  incorrect or have insufficient permissions to create the resources we need.
+  Exceptions that arose due to azure credentials that are either incorrect
+  or have insufficient permissions to create the resources we need.
   """
   pass
 
@@ -74,6 +74,14 @@ class EnvironmentSetup(object):
     def log_warn(self, msg):
         logging.warning(msg)
 
+    def check_auth_error(http_exception):
+        body = http_exception.read()
+        if 'AuthorizationFailed' in body:
+            return 'Client has insufficient Azure permissions'
+        elif 'AuthenticationException' in body:
+            return 'Incorrect Azure client ID or secret'
+
+        return None
 
     def get_authenticated_client(self):
         """
@@ -131,12 +139,14 @@ class EnvironmentSetup(object):
             api.create(env)
 
         except HTTPError as e:
-            if e.code == 302:
+            auth_err = check_auth_error(e)
+
+            if auth_err:
+                # e.read() gives body with details, e.__str__() gives http error number
+                self.log_error("Director returned %s: %s" % (e, e.read()))
+                raise AuthException(auth_err)
+            elif e.code == 302:
                 self.log_warn("an environment with the same name already exists")
-            elif e.code == 400:
-                err_string = "Environment create failed: %s" % e
-                self.log_error(err_string)
-                raise PotentialCredentialException(err_string)
             else:
                 raise
 
@@ -344,12 +354,14 @@ class EnvironmentSetup(object):
             api.create(environment_name, template)
 
         except HTTPError as e:
-            if e.code == 302:
-                self.log_warn("an instance template with the same name already exists")
-            elif e.code == 400:
-                err_string = "Instance template create failed: %s" % e
-                self.log_error(err_string)
-                raise PotentialCredentialException(err_string)
+            auth_err = check_auth_error(e)
+
+            if auth_err:
+                # e.read() gives body with details, e.__str__() gives http error number
+                self.log_error("Director returned %s: %s" % (e, e.read()))
+                raise AuthException(auth_err)
+            elif e.code == 302:
+                self.log_warn("an environment with the same name already exists")
             else:
                 raise
 
@@ -554,19 +566,23 @@ class EnvironmentSetup(object):
         @return:            zero on success, else other
         """
 
-        self.get_authenticated_client()
+        try:
+            self.get_authenticated_client()
 
-        providerType = self.config.get_string('provider.type')
-        cloudProviderMetadata = self.get_cloud_provider_metadata(providerType)
+            providerType = self.config.get_string('provider.type')
+            cloudProviderMetadata = self.get_cloud_provider_metadata(providerType)
 
-        self.log_info("Creating a new environment ...")
-        environment_name = self.create_environment(providerType, cloudProviderMetadata)
+            self.log_info("Creating a new environment ...")
+            environment_name = self.create_environment(providerType, cloudProviderMetadata)
 
-        self.log_info("Creating new instance templates ...")
-        self.create_instance_templates(environment_name, providerType, cloudProviderMetadata)
+            self.log_info("Creating new instance templates ...")
+            self.create_instance_templates(environment_name, providerType, cloudProviderMetadata)
 
-        self.log_info("Adding existing external database servers ...")
-        self.add_existing_external_db_servers(environment_name)
+            self.log_info("Adding existing external database servers ...")
+            self.add_existing_external_db_servers(environment_name)
+        except HTTPError as e:
+            self.log_error(e.read())
+            raise
 
 
 def load_config(config_file, fallback_config_files):

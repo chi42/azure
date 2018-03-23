@@ -35,7 +35,7 @@ setup_default = __import__('setup-default')
 format = "%(asctime)s %(levelname)s: %(message)s"
 datefmt ='%a %b %d %H:%M:%S %Z %Y'
 logFileName = '/var/log/cloudera-azure-initialize.log'
-logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.DEBUG)
+logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.INFO)
 
 DEFAULT_BASE_DIR = "/home"
 DEFAULT_BASE_CONF_NAME = "azure.simple.conf"
@@ -210,10 +210,11 @@ def prepareAndImportConf(options):
 
     try:
         env.run_setup()
-    except setup_default.PotentialCredentialException:
-        logging.info("Azure environment creation has been skipped. Fix any problems in"
-                     "%s and resubmit the configuration to director using "
-                     "'cloudera-director bootstrap-remote ...'" % confLocation)
+    except setup_default.AuthException as e:
+        logging.info("%s: Azure environment creation has been skipped. Validate your "
+                     "credentials in %s and resubmit the configuration to director "
+                     "using 'cloudera-director bootstrap-remote ...'" %\
+                     (e, confLocation))
     else:
         logging.info('Importing config to Cloudera Director server ... Successful')
 
