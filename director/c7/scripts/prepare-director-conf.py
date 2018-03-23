@@ -32,10 +32,10 @@ from optparse import OptionParser
 setup_default = __import__('setup-default')
 
 # logging starts
-format = "%(asctime)s: %(message)s"
+format = "%(asctime)s %(levelname)s: %(message)s"
 datefmt ='%a %b %d %H:%M:%S %Z %Y'
 logFileName = '/var/log/cloudera-azure-initialize.log'
-logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.INFO)
+logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.DEBUG)
 
 DEFAULT_BASE_DIR = "/home"
 DEFAULT_BASE_CONF_NAME = "azure.simple.conf"
@@ -197,17 +197,25 @@ def prepareAndImportConf(options):
     conf.put('databaseServers.mysqlprod1.user', dbUsername)
     conf.put('databaseServers.mysqlprod1.password', dbPassword)
 
+    confLocation = DEFAULT_BASE_DIR + "/" + username + "/" + DEFAULT_CONF_NAME
+
     logging.info('Modifying config ... Successful')
 
     env = setup_default.EnvironmentSetup(setup_default.DEFAULT_SERVER_URL,
                                          dirUsername,
                                          dirPassword,
                                          conf)
-    env.run_setup()
 
-    logging.info('Importing config to Cloudera Director server ... Successful')
+    logging.info('Importing config to Cloudera Director server ...')
 
-    confLocation = DEFAULT_BASE_DIR + "/" + username + "/" + DEFAULT_CONF_NAME
+    try:
+        env.run_setup()
+    except setup_default.PotentialCredentialException:
+        logging.info("Azure environment creation has been skipped. Fix any problems in"
+                     "%s and resubmit the configuration to director using "
+                     "'cloudera-director bootstrap-remote ...'" % confLocation)
+    else:
+        logging.info('Importing config to Cloudera Director server ... Successful')
 
     logging.info('Writing modified config to %s ...' % confLocation)
 
@@ -222,9 +230,6 @@ def prepareAndImportConf(options):
         text_file.write(tool.HOCONConverter.to_hocon(conf))
 
     logging.info('Writing modified config to %s ... Successful' % confLocation)
-
-    logging.info('Importing config to Cloudera Director server ...')
-
 
 
 def main():
