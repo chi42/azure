@@ -144,7 +144,7 @@ class EnvironmentSetup(object):
             api.create(env)
 
         except HTTPError as e:
-            auth_err = check_auth_error(e)
+            auth_err = self.check_auth_error(e)
 
             if auth_err:
                 # e.read() gives body with details, e.__str__() gives http error number
@@ -360,7 +360,7 @@ class EnvironmentSetup(object):
             api.create(environment_name, template)
 
         except HTTPError as e:
-            auth_err = check_auth_error(e)
+            auth_err = self.check_auth_error(e)
 
             if auth_err:
                 # e.read() gives body with details, e.__str__() gives http error number
