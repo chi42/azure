@@ -32,7 +32,7 @@ from optparse import OptionParser
 setup_default = __import__('setup-default')
 
 # logging starts
-format = "%(asctime)s %(levelname)s: %(message)s"
+format = "%(asctime)s: %(message)s"
 datefmt ='%a %b %d %H:%M:%S %Z %Y'
 logFileName = '/var/log/cloudera-azure-initialize.log'
 logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.INFO)
