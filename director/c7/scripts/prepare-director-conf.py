@@ -211,7 +211,7 @@ def prepareAndImportConf(options):
     try:
         env.run_setup()
     except setup_default.AuthException as e:
-        logging.info("%s: Azure environment creation has been skipped. Validate your "
+        logging.error("%s: Azure environment creation has been skipped. Validate your "
                      "credentials in %s and resubmit the configuration to director "
                      "using 'cloudera-director bootstrap-remote ...'" %\
                      (e, confLocation))

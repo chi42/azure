@@ -74,13 +74,13 @@ class EnvironmentSetup(object):
     def log_warn(self, msg):
         logging.warning(msg)
 
-    def check_auth_error(self, http_except):
+    def check_auth_error(self, body):
         """
-        @param http_excep:    a HTTPException object
+        @param body:      body text of HTTPError
 
-        @return               string describing error if auth error, else None
+        @return:          string describing error if auth error, else None
         """
-        body = http_except.read()
+
         if 'AuthorizationFailed' in body:
             return 'Client has insufficient Azure permissions'
         elif 'AuthenticationException' in body:
@@ -144,16 +144,18 @@ class EnvironmentSetup(object):
             api.create(env)
 
         except HTTPError as e:
-            auth_err = self.check_auth_error(e)
+            # read() reads from a stream, once data is read from the stream,
+            # it becomes empty
+            err_body = e.read()
+            auth_err_msg = self.check_auth_error(err_body)
 
-            if auth_err:
-                # e.read() gives body with details, e.__str__() gives http error number
-                self.log_error("Director returned %s: %s" % (e, e.read()))
-                self.log_error("DEADBEEF READ TWICE %s: %s" % (e, e.read()))
+            if auth_err_msg:
+                self.log_error("Director returned %s: %s" % (e, err_body))
                 raise AuthException(auth_err)
             elif e.code == 302:
                 self.log_warn("an environment with the same name already exists")
             else:
+                self.log_error(err_body)
                 raise
 
         self.log_info("Environments: %s" % api.list())
@@ -360,15 +362,18 @@ class EnvironmentSetup(object):
             api.create(environment_name, template)
 
         except HTTPError as e:
-            auth_err = self.check_auth_error(e)
+            # read() reads from a stream, once data is read from the stream,
+            # it becomes empty
+            err_body = e.read()
+            auth_err_msg = self.check_auth_error(err_body)
 
-            if auth_err:
-                # e.read() gives body with details, e.__str__() gives http error number
-                self.log_error("Director returned %s: %s" % (e, e.read()))
-                raise AuthException(auth_err)
+            if auth_err_msg:
+                self.log_error("Director returned %s: %s" % (e, err_body))
+                raise AuthException(auth_err_msg)
             elif e.code == 302:
-                self.log_warn("an environment with the same name already exists")
+                self.log_warn("an instance template with the same name already exists")
             else:
+                self.log_error(err_body)
                 raise
 
         return template.name
@@ -493,6 +498,7 @@ class EnvironmentSetup(object):
         except HTTPError as e:
             if e.code == 404:
                 self.log_error("no such provider type: %s" % provider_type)
+
             raise e
 
         return cloud_provider_metadata
@@ -587,7 +593,12 @@ class EnvironmentSetup(object):
             self.log_info("Adding existing external database servers ...")
             self.add_existing_external_db_servers(environment_name)
         except HTTPError as e:
-            self.log_error(e.read())
+            err_body = e.read()
+            if err_body:
+                # calling method could have read the error out already. if so, the
+                # message is gone and it should be the reader's responsibility to
+                # log the error body
+                self.log_error(err_body)
             raise
 
 
