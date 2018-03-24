@@ -8,9 +8,6 @@
     "resourceAPIVersions":{
       "type":"object"
     },
-    "location": {
-      "type": "string"
-    },
     "dnsNamePrefix": {
       "type": "string"
     },
@@ -31,6 +28,9 @@
     },
     "clusterSpec": {
       "type": "object"
+    },
+    "location": {
+      "type": "string"
     }
   },
   "variables": {

@@ -31,6 +31,9 @@
     },
     "clusterSpec": {
       "type": "object"
+    },
+    "location": {
+      "type": "string"
     }
   },
   "variables": {
@@ -74,6 +77,9 @@
           },
           "clusterSpec": {
             "value":"[parameters('clusterSpec')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }

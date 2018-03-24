@@ -28,6 +28,9 @@
     },
     "clusterSpec": {
       "type": "object"
+    },
+    "location": {
+      "type": "string"
     }
   },
   "variables": {
@@ -45,7 +48,7 @@
       "apiVersion": "[parameters('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('securityGroupName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -73,7 +76,7 @@
         "name": "[parameters('storageAccount').type]"
       },
       "kind": "Storage",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "copy": {
         "name": "storageAccountLoop",
         "count": "[parameters('vmCount')]"
@@ -83,7 +86,7 @@
       "apiVersion": "[parameters('resourceAPIVersions').publicIPAddresses]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[concat(variables('publicIPAddressName'), copyIndex())]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "copy": {
         "name": "publicIPLoop",
         "count": "[parameters('vmCount')]"
@@ -99,7 +102,7 @@
       "apiVersion": "[parameters('resourceAPIVersions').networkInterfaces]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('nicName'), copyIndex())]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'), copyIndex())]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"
@@ -134,7 +137,7 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmName'), copyIndex())]",
       "plan": "[parameters('vmSpec').imageInfo.plan]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "copy": {
         "name": "dataNodeNicLoop",
         "count": "[parameters('vmCount')]"
@@ -238,7 +241,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), copyIndex(), '/prepareDisks')]",
       "apiVersion": "[parameters('resourceAPIVersions').virtualMachinesExtensions]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "copy": {
         "name": "dataNodeNicLoop",
         "count": "[parameters('vmCount')]"

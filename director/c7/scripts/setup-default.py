@@ -76,9 +76,10 @@ class EnvironmentSetup(object):
 
     def check_auth_error(self, body):
         """
-        @param body:      body text of HTTPError
+        @param body:    body text of HTTPError
 
-        @return:          string describing error if auth error, else None
+        @rtype:         string
+        @return:        error description if auth error, else None
         """
 
         if 'AuthorizationFailed' in body:

@@ -5,9 +5,6 @@
     "resourceAPIVersions":{
       "type":"object"
     },
-    "location": {
-      "type": "string"
-    },
     "dnsNamePrefix": {
       "type": "string"
     },
@@ -54,6 +51,9 @@
       "type": "string"
     },
     "installCDH": {
+      "type": "string"
+    },
+    "location": {
       "type": "string"
     }
   },
