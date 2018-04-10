@@ -2,13 +2,6 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Location for the resources."
-      }
-    },
     "adminUsername": {
       "type": "string",
       "defaultValue": "azureuser",
@@ -259,6 +252,7 @@
       "typeHandlerVersion":"2.0",
       "contentVersion":"1.0.0.1"
     },
+    "location": "[resourceGroup().location]",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/director/c7",
@@ -356,7 +350,7 @@
             "value": "[variables('networkSpec')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           }
         }
       }
@@ -406,7 +400,7 @@
             "value": "[variables('clusterParameters')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           }
         }
       }
@@ -432,7 +426,7 @@
             "value": "[variables('networkSpec')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           }
         }
       }
@@ -464,7 +458,7 @@
             "value": "[parameters('directorServerIPAddress')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           }
         }
       }
@@ -497,7 +491,7 @@
             "value": "[variables('clusterParameters')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[variables('location')]"
           }
         }
       }
