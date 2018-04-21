@@ -153,7 +153,7 @@
       "metadata": {
         "description": "The OS VM Image (defaults to ClouderaCentOS7_4)"
       },
-      "allowedValues": [""ClouderaCentOS7_4"]
+      "allowedValues": ["ClouderaCentOS7_4"]
     },
     "company": {
       "type": "string",
@@ -252,7 +252,7 @@
     "addressPrefixes":"[parameters('addressPrefixes')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUriDescription": "For Command Line Deployment, scriptsUri must point to an Azure-accessible location like: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
-    "scriptsUri": "[uri(deployment().properties.templateLink.uri, '.')]",
+    "scriptsUri": "[https://raw.githubusercontent.com/chi42/azure/master/m]",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 0, 13)), '.json')]",
     "sa": "[parameters('masterNodeIPAddress')]",
