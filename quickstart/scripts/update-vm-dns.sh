@@ -25,7 +25,7 @@ log "Verifying DNS configuration ..."
 
 until grep "nameserver ${internal_ip}" /etc/resolv.conf || [ ${n} -le 0 ]
 do
-    systemctl restart NetworkManager
+    service network restart
     log "Waiting for Azure DNS nameserver updates to propagate, this usually takes less than 2 minutes..."
     n=$((n - sleepInterval))
     sleep ${sleepInterval}
