@@ -52,7 +52,7 @@
     },
     "addressPrefix": {
       "type": "string",
-      "defaultValue": "10.3.0.0/16",
+      "defaultValue": "10.3.0.0/24",
       "metadata": {
         "description": "Virtual Network address space"
       }
@@ -101,7 +101,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
-
           {
             "name": "SSH_116",
             "properties": {
@@ -141,6 +140,48 @@
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SSH_60",
+            "properties": {
+              "description": "Allows SSH traffic to 34.211.1.60/32",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "34.211.1.60/32",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SSH_237",
+            "properties": {
+              "description": "Allows SSH traffic to 34.210.228.237/32",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "34.210.228.237/32",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SSH_120",
+            "properties": {
+              "description": "Allows SSH traffic to 52.26.206.120/32",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "52.26.206.120/32",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 105,
               "direction": "Inbound"
             }
           }
