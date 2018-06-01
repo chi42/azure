@@ -266,7 +266,7 @@
       "apiVersion": "[variables('resourceAPIVersions').userAssignedIdentities]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "name": "[variables('names').userAssignedIdentity]",
-      "location": "[variables('location')]"
+      "location": "[resourceGroup().location]"
     }
   ]
 }
