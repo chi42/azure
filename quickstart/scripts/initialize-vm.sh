@@ -84,4 +84,16 @@ fi
 
 log "Installing BIND and dependencies ... Successful"
 
+#
+# Setup DNS server
+#
 
+log "Initializing DNS server ..."
+
+bash ./initialize-dns-server.sh "${INTERNAL_FQDN_SUFFIX}" "${HOST_IP}" "${LOG_FILE}"
+status=$?
+if [ ${status} -ne 0 ]; then
+  log "Initializing DNS server ... Failed" & exit status;
+fi
+
+log "Initializing DNS server ... Successful"

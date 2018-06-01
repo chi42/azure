@@ -2,25 +2,19 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "names": {
-      "type": "object"
-    },
     "resourceAPIVersions": {
       "type": "object"
     },
-    "addressPrefix": {
-      "type": "string"
+    "names": {
+      "type": "object"
     },
-    "dnsIp": {
-      "type": "string"
+    "netConfig": {
+      "type": "object"
     },
     "typeHandlerVersion": {
       "type": "string"
     },
     "scriptsUri": {
-      "type": "string"
-    },
-    "dnsNameSuffix": {
       "type": "string"
     }
   },
@@ -36,19 +30,19 @@
       "properties": {
         "dhcpOptions": {
           "dnsServers": [
-            "[parameters('dnsIp')]"
+            "[parameters('netConfig').dnsVmIpAddress]"
           ]
         },
         "addressSpace": {
           "addressPrefixes": [
-            "[parameters('addressPrefix')]"
+            "[parameters('netConfig').addressPrefix]"
           ]
         },
         "subnets": [
           {
             "name": "[parameters('names').virtualNetworkSubnet]",
             "properties": {
-              "addressPrefix": "[parameters('addressPrefix')]"
+              "addressPrefix": "[parameters('netConfig').addressPrefix]"
             }
           }
         ]
@@ -69,11 +63,11 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
+            "[concat(parameters('scriptsUri'), '/scripts/update-vm-dns.sh')]"
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-dns-server.sh ', ' ', variables('singleQuote'), parameters('dnsNameSuffix'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('dnsIp'), variables('singleQuote'))]"
+          "commandToExecute": "[concat('sh update-vm-dns.sh ', ' ', variables('singleQuote'), parameters('netConfig').dnsVmIpAddress, variables('singleQuote'))]"
         }
       }
     }

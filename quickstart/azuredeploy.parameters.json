@@ -14,10 +14,10 @@
     "resourceNamePrefix": {
       "value": "quickstart"
     },
-    "dnsNamePrefix": {
+    "dnsHostName": {
       "value": "dns"
     },
-    "dnsNameSuffix": {
+    "dnsPrivateZoneName": {
       "value": "cdh-cluster.internal"
     },
     "addressPrefix": {
