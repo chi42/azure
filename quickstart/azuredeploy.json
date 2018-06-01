@@ -70,7 +70,7 @@
       "virtualMachinesExtensions": "2017-03-30",
       "userAssignedIdentities": "2015-08-31-PREVIEW"
     },
-    "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/testing",
+    "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/quickstart",
     "names": {
       "networkSecurityGroup": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
       "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
