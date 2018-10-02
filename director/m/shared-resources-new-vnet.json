@@ -7,14 +7,17 @@
     },
     "networkSpec": {
       "type": "object"
+    },
+    "location": {
+      "type": "string"
     }
   },
   "resources": [
     {
-      "apiVersion": "[parameters('version').resourceAPIVersion.virtualNetworks]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[parameters('networkSpec').virtualNetworkName]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [

@@ -7,15 +7,18 @@
     },
     "networkSpec": {
       "type": "object"
+    },
+    "location": {
+      "type": "string"
     }
   },
   "variables": {},
   "resources": [
     {
-      "apiVersion": "[parameters('version').resourceAPIVersions.virtualNetworks]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[parameters('networkSpec').virtualNetworkName]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "dhcpOptions": {
           "dnsServers": [

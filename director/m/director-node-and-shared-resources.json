@@ -31,11 +31,13 @@
     },
     "clusterParameters": {
       "type": "object"
+    },
+    "location": {
+      "type": "string"
     }
   },
   "variables": {
     "singleQuote": "'",
-    "resourceAPIVersions": "[parameters('version').resourceAPIVersions]",
     "vmName": "[parameters('dnsNamePrefix')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
@@ -48,40 +50,31 @@
   },
   "resources": [
     {
-      "apiVersion": "[resourceAPIVersions.availabilitySets]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('masterAsName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { },
-      "sku": {
-          "name": "Aligned"
-      }
+      "location": "[parameters('location')]",
+      "properties": { }
     },
     {
-      "apiVersion": "[resourceAPIVersions.availabilitySets]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('workerAsName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { },
-      "sku": {
-          "name": "Aligned"
-      }
+      "location": "[parameters('location')]",
+      "properties": { }
     },
     {
-      "apiVersion": "[resourceAPIVersions.availabilitySets]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('edgeAsName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { },
-      "sku": {
-          "name": "Aligned"
-      }
+      "location": "[parameters('location')]",
+      "properties": { }
     },
     {
-      "apiVersion": "[resourceAPIVersions.networkSecurityGroups]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(parameters('networkSpec').virtualNetworkName,'-nsg')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -102,10 +95,10 @@
       }
     },
     {
-      "apiVersion": "[resourceAPIVersions.networkSecurityGroups]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('dirSecurityGroupName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -128,18 +121,17 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
-      "apiVersion": "[resourceAPIVersions.storageAccount]",
-      "sku": {
-        "name": "[parameters('storageAccount').type]"
-      },
-      "kind": "Storage",
-      "location": "[resourceGroup().location]"
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[parameters('storageAccount').type]"
+      }
     },
     {
-      "apiVersion": "[resourceAPIVersions.publicIPAddresses]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
@@ -148,10 +140,10 @@
       }
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersions.networkInterfaces]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('nicName'))]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('dirSecurityGroupName'))]"
@@ -178,15 +170,15 @@
       }
     },
     {
-      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachines]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmName'))]",
       "plan": {
-        "name": "cloudera-centos-6",
+        "name": "7_4",
         "publisher": "cloudera",
-        "product": "cloudera-centos-6"
+        "product": "cloudera-centos-os"
       },
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
@@ -206,8 +198,8 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "cloudera",
-            "offer": "cloudera-centos-6",
-            "sku": "CLOUDERA-CENTOS-6",
+            "offer": "cloudera-centos-os",
+            "sku": "7_4",
             "version": "latest"
           },
           "osDisk": {
@@ -243,8 +235,8 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), '/bootstrapServer')]",
-      "apiVersion": "[parameters('version').resourceAPIVersions.virtualMachinesExtensions]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
