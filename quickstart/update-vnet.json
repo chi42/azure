@@ -35,14 +35,14 @@
         },
         "addressSpace": {
           "addressPrefixes": [
-            "[parameters('netConfig').addressPrefix]"
+            "[parameters('netConfig').networkAddressSpace]"
           ]
         },
         "subnets": [
           {
             "name": "[parameters('names').virtualNetworkSubnet]",
             "properties": {
-              "addressPrefix": "[parameters('netConfig').addressPrefix]"
+              "addressPrefix": "[parameters('netConfig').networkAddressSpace]"
             }
           }
         ]

@@ -50,7 +50,7 @@
         "description": "IP address for the DNS Server VM"
       }
     },
-    "addressPrefix": {
+    "networkAddressSpace": {
       "type": "string",
       "defaultValue": "10.3.0.0/24",
       "metadata": {
@@ -84,7 +84,7 @@
       "dnsHostName": "[parameters('dnsHostName')]",
       "dnsPrivateZoneName": "[parameters('dnsPrivateZoneName')]",
       "dnsVmIpAddress": "[parameters('dnsVmIpAddress')]",
-      "addressPrefix": "[parameters('addressPrefix')]"
+      "networkAddressSpace": "[parameters('networkAddressSpace')]"
     },
     "vmAttributes": {
       "adminUsername": "[parameters('adminUsername')]",
@@ -196,14 +196,14 @@
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('netConfig').addressPrefix]"
+            "[variables('netConfig').networkAddressSpace]"
           ]
         },
         "subnets": [
           {
             "name": "[variables('names').virtualNetworkSubnet]",
             "properties": {
-              "addressPrefix": "[variables('netConfig').addressPrefix]"
+              "addressPrefix": "[variables('netConfig').networkAddressSpace]"
             }
           }
         ]

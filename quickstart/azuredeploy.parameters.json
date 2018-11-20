@@ -20,7 +20,7 @@
     "dnsPrivateZoneName": {
       "value": "cdh-cluster.internal"
     },
-    "addressPrefix": {
+    "networkAddressSpace": {
       "value": "10.3.0.0/16"
     },
     "dnsVmIpAddress": {
