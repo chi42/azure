@@ -98,7 +98,7 @@ options {
     recursion yes;
     forwarders { ${nameserver_ip}; };
     dnssec-enable yes;
-    dnssec-validation auto;
+    dnssec-validation yes;
     dnssec-lookaside auto;
     /* Path to ISC DLV key */
     bindkeys-file "/etc/named.iscdlv.key";
