@@ -73,7 +73,7 @@ log "Installing BIND and dependencies ..."
 n=0
 until [ ${n} -ge 5 ]
 do
-    sudo yum install -y bind bind-utils >> ${LOG_FILE} 2>&1 && break
+    sudo yum install -y bind bind-utils tcpdump >> ${LOG_FILE} 2>&1 && break
     n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
