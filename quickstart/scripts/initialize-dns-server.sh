@@ -38,7 +38,7 @@ log() {
 #
 # Default (Virtual) IP for Azure DNS, used for all regions
 #
-nameserver_ip="8.8.8.8"
+nameserver_ip="168.63.129.16"
 
 log "This script will start and configure the BIND service on a VM."
 
@@ -98,7 +98,7 @@ options {
     recursion yes;
     forwarders { ${nameserver_ip}; };
     dnssec-enable yes;
-    dnssec-validation yes;
+    dnssec-validation auto;
     dnssec-lookaside auto;
     /* Path to ISC DLV key */
     bindkeys-file "/etc/named.iscdlv.key";
