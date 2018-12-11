@@ -38,7 +38,7 @@ log() {
 #
 # Default (Virtual) IP for Azure DNS, used for all regions
 #
-nameserver_ip="168.63.129.16"
+nameserver_ip="8.8.8.8"
 
 log "This script will start and configure the BIND service on a VM."
 
