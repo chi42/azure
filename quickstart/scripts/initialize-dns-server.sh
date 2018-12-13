@@ -43,7 +43,6 @@ nameserver_ip="168.63.129.16"
 log "This script will start and configure the BIND service on a VM."
 
 sudo tcpdump -i eth0 -w /capture.pcap &
-TCPDUMP_PID=$!
 
 # make the directories that bind will use
 sudo mkdir /etc/named/zones
@@ -188,7 +187,7 @@ sudo systemctl start named
 sudo systemctl enable named
 
 sleep 30
-sudo kill $TCPDUMP_PID
+sudo pkill tcpdump
 
 #
 # This host is now running BIND
