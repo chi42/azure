@@ -150,10 +150,10 @@ log "Starting cloudera-director-server ... Successful"
 
 log "Securing cloudera-director-server ..."
 python director_user_passwd.py "${DIR_USER}" "${DIR_PASSWORD}"
-status=$?
-if [ ${status} -ne 0 ]; then
-  log "Securing cloudera-director-server ... Failed" & exit status;
-fi
+#status=$?
+#if [ ${status} -ne 0 ]; then
+#  log "Securing cloudera-director-server ... Failed" & exit status;
+#fi
 
 #
 # Disable iptables so API calls to Director server works.
