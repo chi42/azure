@@ -100,13 +100,14 @@ log "Installing basic tools ... Successful"
 
 log "Installing Cloudera Director Server, Client, Plugins and dependencies ..."
 
-sudo wget -t 5 http://archive.cloudera.com/director/redhat/7/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> ${LOG_FILE}
+#sudo wget -t 5 http://archive.cloudera.com/director/redhat/7/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> ${LOG_FILE}
+sudo wget -t 5 "http://archive.cloudera.com/director6/6.1/redhat7/cloudera-director.repo"  >> ${LOG_FILE}
 
 # install with retry
 n=0
 until [ ${n} -ge 5 ]
 do
-    sudo yum install -y bind bind-utils python-pip oracle-j2sdk1.8 cloudera-director-server-2.* cloudera-director-client-2.* >> ${LOG_FILE} 2>&1 && break
+    sudo yum install -y bind bind-utils python-pip oracle-j2sdk1.8 cloudera-director-server cloudera-director-client >> ${LOG_FILE} 2>&1 && break
     n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
