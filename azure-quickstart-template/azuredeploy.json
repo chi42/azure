@@ -64,6 +64,31 @@
       "location": "[variables('location')]"
     },
     {
+      "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "type": "Microsoft.Resources/deployments",
+      "name": "[variables('names').updateNsg]",
+      "dependsOn": ["[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]"],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/update-nsg.json')]",
+          "contentVersion": "[variables('contentVersion')]"
+        },
+        "parameters": {
+          "networkSecurityGroupName":{
+            "value":"[variables('names').networkSecurityGroup]"
+          },
+          "nsgResourceAPIVersion": {
+            "value": "[variables('resourceAPIVersions').networkSecurityGroups]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          }
+        }
+      }
+    }
+    {
       "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('names').virtualNetwork]",
@@ -104,31 +129,6 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "name": "[variables('names').userAssignedIdentity]",
       "location": "[variables('location')]"
-    },
-    {
-      "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
-      "apiVersion": "[variables('templateAPIVersion')]",
-      "type": "Microsoft.Resources/deployments",
-      "name": "[variables('names').updateNsg]",
-      "dependsOn": ["[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]"],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "updateNsgUri": "[concat(variables('scriptsUri'), '/update-nsg.json')]",
-          "contentVersion": "[variables('contentVersion')]"
-        },
-        "parameters": {
-          "networkSecurityGroupName":{
-            "value":"[variables('names').networkSecurityGroup]"
-          },
-          "nsgResourceAPIVersion": {
-            "value": "[variables('resourceAPIVersions').networkSecurityGroups]"
-          },
-          "location": {
-            "value": "[variables('location')]"
-          }
-        }
-      }
     }
   ]
 }
