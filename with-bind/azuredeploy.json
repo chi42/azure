@@ -81,7 +81,7 @@
       "virtualMachinesExtensions": "2017-03-30",
       "userAssignedIdentities": "2015-08-31-PREVIEW"
     },
-    "scriptsUri": "https://raw.githubusercontent.com/cloudera/altus-azure-tools/master/azure-quickstart-template-with-bind-dns",
+    "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/with-bind",
     "names": {
       "networkSecurityGroup": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
       "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
