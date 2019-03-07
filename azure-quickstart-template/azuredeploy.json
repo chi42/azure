@@ -23,7 +23,7 @@
         "description": "Virtual Network address space"
       }
     },
-    "allowPublicIPs": {
+    "allowPublicIps": {
       "type": "string",
       "allowedValues": [
         "Yes",
