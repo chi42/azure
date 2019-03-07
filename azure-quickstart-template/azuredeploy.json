@@ -23,7 +23,7 @@
         "description": "Virtual Network address space"
       }
     },
-    "allowPublicIps": {
+    "allowPublicIPs": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -53,14 +53,14 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('usePublicIPs'), false)]",
+      "condition": "[equals(parameters('allowPublicIPs'), false)]",
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('names').networkSecurityGroup]",
       "location": "[variables('location')]"
     },
     {
-      "condition": "[equals(parameters('usePublicIPs'), true)]",
+      "condition": "[equals(parameters('allowPublicIPs'), true)]",
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('names').networkSecurityGroup]",
