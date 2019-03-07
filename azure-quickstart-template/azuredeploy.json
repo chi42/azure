@@ -48,7 +48,7 @@
     },
     "location": "[resourceGroup().location]",
     "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/azure-quickstart-template",
-    "updateNsgUri": "[concat(variables('scriptsUri'), 'updateNsg.json')]",
+    "updateNsgUri": "[concat(variables('scriptsUri'), '/updateNsg.json')]",
     "names": {
       "networkSecurityGroup": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
       "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
