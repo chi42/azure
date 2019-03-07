@@ -1,5 +1,5 @@
 # By clicking "Deploy to Azure" you agree to the Terms and Conditions below.
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcloudera%2Faltus-azure-tools%2Fmaster%2Fazure-quickstart-template-with-bind-dns%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fchi42%2Fazure%2Fmaster%2Fwith-bind%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png" />
 </a>
 
