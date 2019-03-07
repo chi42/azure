@@ -89,7 +89,8 @@
       "dnsVm": "[parameters('dnsHostName')]",
       "dnsVmNic": "[concat(parameters('dnsHostName'), '-nic')]",
       "osDisk": "[concat(parameters('dnsHostName'), '-osDisk')]",
-      "userAssignedIdentity": "[concat(parameters('resourceNamePrefix'), '-ua-msi')]"
+      "userAssignedIdentity": "[concat(parameters('resourceNamePrefix'), '-ua-msi')]",
+      "updateNsg": "updateNsg"
     },
     "netConfig": {
       "dnsHostName": "[parameters('dnsHostName')]",
