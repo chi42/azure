@@ -23,11 +23,11 @@
         "description": "Virtual Network address space"
       }
     },
-    "usePublicIps": {
+    "allowPublicIps": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Add security rules to allow public IPs for cluster nodes"
+        "description": "Add security rules to allow public IPs for created VMs"
       }
     }
 
@@ -53,6 +53,14 @@
   },
   "resources": [
     {
+      "condition": "[equals(parameters('usePublicIPs'), false)]",
+      "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('names').networkSecurityGroup]",
+      "location": "[variables('location')]"
+    },
+    {
+      "condition": "[equals(parameters('usePublicIPs'), true)]",
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('names').networkSecurityGroup]",
