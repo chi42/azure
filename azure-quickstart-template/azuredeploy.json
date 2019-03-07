@@ -87,7 +87,7 @@
           }
         }
       }
-    }
+    },
     {
       "apiVersion": "[variables('resourceAPIVersions').virtualNetworks]",
       "type": "Microsoft.Network/virtualNetworks",
