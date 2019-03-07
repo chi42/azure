@@ -57,19 +57,12 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('allowPublicIPs'), 'No')]",
-      "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('names').networkSecurityGroup]",
-      "location": "[variables('location')]"
-    },
-    {
-      "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('names').networkSecurityGroup]",
       "location": "[variables('location')]",
       "properties": {
+        "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
         "securityRules": [
           {
             "name": "SSH_116",
