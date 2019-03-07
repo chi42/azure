@@ -34,13 +34,12 @@
         "description": "Add security rules to allow public IPs for created VMs"
       }
     }
-
   },
   "variables": {
+    "templateAPIVersion": "2017-05-10",
     "contentVersion": "1.0.0.0",
     "typeHandlerVersion": "2.0",
     "resourceAPIVersions": {
-      "templateAPIVersion": "2017-05-10",
       "virtualNetworks": "2017-06-01",
       "networkSecurityGroups": "2017-06-01",
       "dnsZones": "2017-10-01",
@@ -48,7 +47,6 @@
     },
     "location": "[resourceGroup().location]",
     "scriptsUri": "https://raw.githubusercontent.com/chi42/azure/master/azure-quickstart-template",
-    "updateNsgUri": "[concat(variables('scriptsUri'), '/updateNsg.json')]",
     "names": {
       "networkSecurityGroup": "[concat(parameters('resourceNamePrefix'), '-nsg')]",
       "virtualNetwork": "[concat(parameters('resourceNamePrefix'), '-vnet')]",
@@ -109,14 +107,14 @@
     },
     {
       "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
-      "apiVersion": "[variables('resourceAPIVersions').templateAPIVersion]",
+      "apiVersion": "[variables('templateAPIVersion')]",
       "type": "Microsoft.Resources/deployments",
       "name": "[variables('names').updateNsg]",
       "dependsOn": ["[concat('Microsoft.Network/networkSecurityGroups/', variables('names').networkSecurityGroup)]"],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('updateNsgUri')]",
+          "uri": "updateNsgUri": "[concat(variables('scriptsUri'), '/update-nsg.json')]",
           "contentVersion": "[variables('contentVersion')]"
         },
         "parameters": {
