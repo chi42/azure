@@ -24,8 +24,12 @@
       }
     },
     "allowPublicIPs": {
-      "type": "bool",
-      "defaultValue": false,
+      "type": "string",
+      "allowedValues": [
+        "Yes",
+        "No"
+      ],
+      "defaultValue": "No",
       "metadata": {
         "description": "Add security rules to allow public IPs for created VMs"
       }
@@ -53,14 +57,14 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('allowPublicIPs'), false)]",
+      "condition": "[equals(parameters('allowPublicIPs'), 'No')]",
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('names').networkSecurityGroup]",
       "location": "[variables('location')]"
     },
     {
-      "condition": "[equals(parameters('allowPublicIPs'), true)]",
+      "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
       "apiVersion": "[variables('resourceAPIVersions').networkSecurityGroups]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('names').networkSecurityGroup]",
