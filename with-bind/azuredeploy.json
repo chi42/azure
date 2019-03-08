@@ -132,7 +132,7 @@
             "value": "[variables('resourceAPIVersions').networkSecurityGroups]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[resourceGroup().location]"
           }
         }
       }
