@@ -64,7 +64,7 @@
       "location": "[variables('location')]"
     },
     {
-      "condition": "[equals(parameters('clusterCommunicationMethod'), 'via Reverse SSH Tunnel (no inbound SSH rules created)')]",
+      "condition": "[equals(parameters('clusterCommunicationMethod'), 'via Public IPs (creates inbound SSH rules)')]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "type": "Microsoft.Resources/deployments",
       "name": "[variables('names').updateNsg]",
