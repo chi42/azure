@@ -23,15 +23,15 @@
         "description": "Virtual Network address space"
       }
     },
-    "allowPublicIps": {
+    "clusterCommunicationMethod": {
       "type": "string",
       "allowedValues": [
-        "Yes",
-        "No"
+        "via Public IPs (creates inbound SSH rules)",
+        "via Reverse SSH Tunnel (no inbound SSH rules created)"
       ],
-      "defaultValue": "No",
+      "defaultValue": "via Reverse SSH Tunnel (no inbound SSH rules created)",
       "metadata": {
-        "description": "Add security rules to allow public IPs for created VMs"
+        "description": "Method used by Altus to communicate with created clusters"
       }
     }
   },
@@ -64,7 +64,7 @@
       "location": "[variables('location')]"
     },
     {
-      "condition": "[equals(parameters('allowPublicIPs'), 'Yes')]",
+      "condition": "[equals(parameters('clusterCommunicationMethod'), 'via Reverse SSH Tunnel (no inbound SSH rules created)')]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "type": "Microsoft.Resources/deployments",
       "name": "[variables('names').updateNsg]",
