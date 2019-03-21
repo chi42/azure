@@ -57,7 +57,7 @@
         "description": "Virtual Network address space"
       }
     },
-    "publicIPs": {
+    "public_IPs": {
       "type": "string",
       "allowedValues": [
         "Enable Public IPs (will create inbound SSH rules)",
@@ -113,7 +113,7 @@
       "location": "[resourceGroup().location]"
     },
     {
-      "condition": "[equals(parameters('publicIPs'), 'Enable Public IPs (will create inbound SSH rules)')]",
+      "condition": "[equals(parameters('public_IPs'), 'Enable Public IPs (will create inbound SSH rules)')]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "type": "Microsoft.Resources/deployments",
       "name": "[variables('names').updateNsg]",
