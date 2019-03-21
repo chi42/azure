@@ -36,7 +36,7 @@ The template expects the following parameters:
 | dnsPrivateZoneName | DNS private zone name to be used for the CDH cluster | altus.quickstart |
 | networkAddressSpace | IPv4 CIDR subnet for the cluster and DNS VM | 10.3.0.4 |
 | dnsVmIpAddress | IP address for the DNS VM, must fall within the aforementioned subnet | 10.3.0.0/24 |
-| clusterCommunicationMethod | Method used by Altus to communicate with created clusters | via Reverse SSH Tunnel |
+| publicIPs | Determines how Altus services connect to a cluster. If Altus connects through public IPs, the template includes inbound SSH rules for the network security group for Altus clusters. | No Public IPs |
 
 In order to deploy the template, all the files (template, parameters, and scripts)
 must be accessible via HTTP by the host performing the deployment.

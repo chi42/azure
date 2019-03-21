@@ -26,8 +26,8 @@
     "dnsVmIpAddress": {
       "value": "10.3.0.4"
     },
-    "clusterCommunicationMethod": {
-      "value": "via Reverse SSH Tunnel (no inbound SSH rules created)"
+    "publicIPs": {
+      "value": "No Public IPs (will not create inbound SSH rules)"
     }
   }
 }
