@@ -27,7 +27,7 @@ The template expects the following parameters:
 | resourceNamePrefix | Naming prefix for the virtual network and network security group, which will be created with the names <PREFIX>-vnet and <PREFIX>-nsg respectively | altus-quickstart |
 | dnsPrivateZoneName | DNS private zone name | altus.quickstart |
 | networkAddressSpace | Virtual Network Address space | 10.3.0.0/24 |
-| clusterCommunicationMethod | Method used by Altus to communicate with created clusters | via Reverse SSH Tunnel |
+| publicIps | Determines how Altus services connect to a cluster. If Altus connects through public IPs, the template includes inbound SSH rules for the network security group for Altus clusters. | No Public IPs |
 
 In order to deploy the template, all the files (template, parameters etc.)
 must be accessible via HTTP by the host performing the deployment.

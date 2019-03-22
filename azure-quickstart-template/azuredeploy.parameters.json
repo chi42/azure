@@ -11,8 +11,8 @@
     "networkAddressSpace": {
       "value": "10.3.0.0/24"
     },
-    "clusterCommunicationMethod": {
-      "value": "via Reverse SSH Tunnel (no inbound SSH rules created)"
+    "publicIps": {
+      "value": "No Public IPs (will not create inbound SSH rules)"
     }
   }
 }
