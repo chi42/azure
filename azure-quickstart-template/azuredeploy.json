@@ -29,7 +29,7 @@
         "Enable Public IPs (will create inbound SSH rules)",
         "No Public IPs (will not create inbound SSH rules)"
       ],
-      "defaultValue": "via Reverse SSH Tunnel (no inbound SSH rules created)",
+      "defaultValue": "No Public IPs (will not create inbound SSH rules)",
       "metadata": {
         "description": "Determines how Altus services connect to a cluster. If Altus connects through public IPs, the template includes inbound SSH rules for the network security group for Altus clusters."
       }
